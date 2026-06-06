@@ -1,0 +1,71 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+@custom-variant dark (&:is(.dark *));
+@custom-variant tonal (&:is(.tonal *));
+
+/* Tonal theme: warm neutral surfaces (test palette). Toggle via footer → Tonal. */
+html.tonal {
+  --tonal-surface: #0a1208;
+  --tonal-surface-raised: #1b2717;
+  --tonal-surface-sunken: #12210e;
+  --tonal-fg: #ddd8cc;
+  --tonal-fg-muted: #7d9970;
+  --tonal-border: #2b3d22;
+  --tonal-accent: #6b8f5a ;
+  --tonal-progress: #4a6a3a;
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+/* Blog: tonal theme uses html.tonal without .dark, so dark:prose-invert does not apply. */
+@layer utilities {
+  .tonal\:prose-invert {
+    &:is(.tonal *) {
+      --tw-prose-body: var(--tonal-fg);
+      --tw-prose-headings: var(--tonal-fg);
+      --tw-prose-lead: var(--tonal-fg-muted);
+      --tw-prose-links: var(--tonal-accent);
+      --tw-prose-bold: var(--tonal-fg);
+      --tw-prose-counters: var(--tonal-fg-muted);
+      --tw-prose-bullets: var(--tonal-fg-muted);
+      --tw-prose-hr: var(--tonal-border);
+      --tw-prose-quotes: var(--tonal-fg);
+      --tw-prose-quote-borders: var(--tonal-border);
+      --tw-prose-captions: var(--tonal-fg-muted);
+      --tw-prose-kbd: var(--tonal-fg);
+      --tw-prose-kbd-shadows: 221 216 204;
+      --tw-prose-code: var(--tonal-fg);
+      --tw-prose-pre-code: var(--tonal-fg-muted);
+      --tw-prose-pre-bg: var(--tonal-surface-sunken);
+      --tw-prose-th-borders: var(--tonal-border);
+      --tw-prose-td-borders: var(--tonal-border);
+    }
+  }
+}
+
+:root {
+  --sh-class: #7aa2f7;
+  --sh-sign: #89ddff;
+  --sh-string: #9ece6a;
+  --sh-keyword: #bb9af7;
+  --sh-comment: #565f89;
+  --sh-jsxliterals: #7aa2f7;
+  --sh-property: #73daca;
+  --sh-entity: #e0af68;
+}

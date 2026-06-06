@@ -1,0 +1,66 @@
+'use client'
+
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react'
+
+export type PanelItem = {
+  id: string
+  title: string
+}
+
+type PanelState = {
+  items: PanelItem[]
+  heights: number[]
+  open: (item: PanelItem) => void
+  close: (id: string) => void
+  setHeights: (h: number[]) => void
+}
+
+const PanelContext = createContext<PanelState | null>(null)
+
+export function usePanel(): PanelState {
+  const ctx = useContext(PanelContext)
+  if (!ctx) throw new Error('usePanel must be used within a PanelProvider')
+  return ctx
+}
+
+function distributeHeights(count: number): number[] {
+  if (count === 0) return []
+  const base = Math.floor(100 / count)
+  const remainder = 100 - base * count
+  return Array.from({ length: count }, (_, i) => (i === 0 ? base + remainder : base))
+}
+
+export function PanelProvider({ children }: { children: React.ReactNode }) {
+  const [items, setItems] = useState<PanelItem[]>([])
+  const [heights, setHeights] = useState<number[]>([])
+
+  const open = useCallback((item: PanelItem) => {
+    setItems((prev) => {
+      if (prev.some((p) => p.id === item.id)) return prev
+      const next = [...prev, item]
+      setHeights(distributeHeights(next.length))
+      return next
+    })
+  }, [])
+
+  const close = useCallback((id: string) => {
+    setItems((prev) => {
+      const next = prev.filter((p) => p.id !== id)
+      setHeights(distributeHeights(next.length))
+      return next
+    })
+  }, [])
+
+  const value = useMemo<PanelState>(
+    () => ({ items, heights, open, close, setHeights }),
+    [items, heights, open, close],
+  )
+
+  return <PanelContext.Provider value={value}>{children}</PanelContext.Provider>
+}
