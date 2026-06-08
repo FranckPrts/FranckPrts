@@ -65,7 +65,7 @@ export function useMDXComponents(
     }) => {
       return (
         <figure className="flex flex-col items-center">
-          <img src={src} alt={alt} className="rounded-xl w-xl" />
+          <img src={src} alt={alt} className="rounded-xl w-xl border-2 border-zinc-200 dark:border-zinc-800 tonal:border-[var(--tonal-border)]" />
           <figcaption>{caption}</figcaption>
         </figure>
       )
