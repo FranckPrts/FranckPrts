@@ -14,4 +14,8 @@ export const BLOG_REGISTRY: Record<string, BlogRegistryEntry> = {
     title: 'Neurotheater — EEG streams for a live performance',
     component: () => import('@/app/blog/neuro-theater-eeg-worshop-jhu-mica-2026/page.mdx'),
   },
+  'neuro-theater-eeg-performance-dc-2026': {
+    title: "'hyper_object' a neuro-theater live performance",
+    component: () => import('@/app/blog/neuro-theater-eeg-performance-dc-2026/page.mdx'),
+  },
 }
