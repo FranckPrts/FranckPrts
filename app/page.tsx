@@ -18,6 +18,7 @@ import {
   WORK_EXPERIENCE,
   BLOG_POSTS,
   EMAIL,
+  CONTACT_LINK,
   SOCIAL_LINKS,
 } from './data'
 import { usePanel } from '@/components/panel/PanelContext'
@@ -461,13 +462,17 @@ export default function Personal() {
       >
         <h3 className="mb-5 text-lg font-medium">Connect</h3>
         <p className="mb-5 text-zinc-600 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]">
-          Feel free to contact me at{' '}
+          Feel free to contact me {' '}
           <a
             className="underline dark:text-zinc-300 tonal:text-[var(--tonal-fg)]"
-            href={`mailto:${EMAIL}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            href={CONTACT_LINK}
           >
-            {EMAIL}
+            {/* {EMAIL} */}
+            here
           </a>
+          .
         </p>
         <div className="flex items-center justify-start space-x-3">
           {SOCIAL_LINKS.map((link) => (
