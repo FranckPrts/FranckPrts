@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -11,7 +11,7 @@
   "dependencies": {
     "@mdx-js/loader": "^3.0.1",
     "@mdx-js/react": "^3.0.1",
-    "@next/mdx": "^14.2.13",
+    "@next/mdx": "^15.5.14",
     "@tailwindcss/typography": "^0.5.15",
     "@types/mdx": "^2.0.13",
     "clsx": "^2.1.1",
