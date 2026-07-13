@@ -5,6 +5,7 @@ import { NetworkIcon, XIcon } from 'lucide-react'
 import { BLOG_REGISTRY } from '@/lib/blog-registry'
 import { TextMorph } from '@/components/ui/text-morph'
 import { MagneticSocialLink } from '@/components/ui/magnetic-social-link'
+import { ProseContent } from '@/components/mdx/ProseContent'
 
 type PanelSectionProps = {
   id: string
@@ -54,9 +55,9 @@ function CopyButton({ id }: { id: string }) {
 
 function ContentBody({ Content }: { Content: React.ComponentType }) {
   return (
-    <div className="prose prose-gray px-4 pb-10 prose-h1:text-xl prose-h1:font-medium prose-h2:mt-10 prose-h2:text-lg prose-h2:font-medium prose-h3:text-base prose-h3:font-medium prose-h4:font-medium prose-strong:font-medium dark:prose-invert tonal:prose-invert">
+    <ProseContent context="panel">
       <Content />
-    </div>
+    </ProseContent>
   )
 }
 
@@ -97,7 +98,7 @@ export function PanelSection({ id, title, onClose }: PanelSectionProps) {
   const hasLinks = linkEntries.length > 0
 
   return (
-    <div className="m-2 flex min-h-0 flex-1 flex-col overflow-hidden rounded-3xl border border-zinc-100 dark:border-zinc-800 tonal:border-[var(--tonal-border)]">
+    <div className="panel-section my-2 mr-2 ml-0 flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-3xl border border-zinc-100 dark:border-zinc-800 tonal:border-[var(--tonal-border)]">
       {linkedOpen && hasLinks ? (
         <div className="w-full flex-shrink-0 border-b border-zinc-200/60 bg-zinc-100/50 px-4 py-2 backdrop-blur-sm dark:border-zinc-800/60 dark:bg-zinc-900/50 tonal:border-[var(--tonal-border)] tonal:bg-[var(--tonal-surface-sun)]/60">
           <div

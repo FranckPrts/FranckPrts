@@ -4,9 +4,11 @@ import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react'
+import { DEFAULT_INDEX_WIDTH } from '@/lib/panel-split'
 
 export type PanelItem = {
   id: string
@@ -16,9 +18,11 @@ export type PanelItem = {
 type PanelState = {
   items: PanelItem[]
   heights: number[]
+  indexWidth: number
   open: (item: PanelItem) => void
   close: (id: string) => void
   setHeights: (h: number[]) => void
+  setIndexWidth: (w: number) => void
 }
 
 const PanelContext = createContext<PanelState | null>(null)
@@ -39,6 +43,13 @@ function distributeHeights(count: number): number[] {
 export function PanelProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<PanelItem[]>([])
   const [heights, setHeights] = useState<number[]>([])
+  const [indexWidth, setIndexWidth] = useState(DEFAULT_INDEX_WIDTH)
+
+  useEffect(() => {
+    if (items.length === 0) {
+      setIndexWidth(DEFAULT_INDEX_WIDTH)
+    }
+  }, [items.length])
 
   const open = useCallback((item: PanelItem) => {
     setItems((prev) => {
@@ -58,8 +69,8 @@ export function PanelProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const value = useMemo<PanelState>(
-    () => ({ items, heights, open, close, setHeights }),
-    [items, heights, open, close],
+    () => ({ items, heights, indexWidth, open, close, setHeights, setIndexWidth }),
+    [items, heights, indexWidth, open, close],
   )
 
   return <PanelContext.Provider value={value}>{children}</PanelContext.Provider>

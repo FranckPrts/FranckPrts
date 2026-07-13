@@ -59,7 +59,62 @@ html.tonal {
   }
 }
 
+@layer components {
+  .prose-content {
+    container-type: inline-size;
+    width: 100%;
+  }
+
+  .prose-measure {
+    max-width: var(--width-measure);
+    margin-inline: auto;
+    overflow-x: visible;
+  }
+
+  /* Opt-in: breaks out of centered prose measure to full container width */
+  .prose-wide {
+    width: 100cqi;
+    max-width: 100cqi;
+    margin-inline: calc((100% - 100cqi) / 2);
+  }
+
+  /* Panel card (desktop): text measure + prose-content horizontal padding (px-4) */
+  @media (min-width: 1024px) {
+    .panel-section {
+      max-width: var(--width-panel-content);
+      margin-inline: 0 auto;
+    }
+  }
+
+  .panel-column {
+    width: 100%;
+    max-width: var(--width-panel-column);
+  }
+
+  .panel-column--flush {
+    max-width: none;
+  }
+
+  .app-layout {
+    width: 100%;
+    max-width: var(--width-index);
+  }
+
+  @media (min-width: 1024px) {
+    .app-layout--with-panel {
+      max-width: 100%;
+    }
+  }
+}
+
 :root {
+  --width-measure: 65ch;
+  --width-index: 640px;
+  --width-split-default: 640px;
+  --width-panel-content: calc(var(--width-measure) + 2rem);
+  /* panel card (m-2) + separator (3px) */
+  --width-panel-column: calc(var(--width-panel-content) + 1rem + 3px);
+  --width-layout: calc(var(--width-index) + var(--width-panel-column));
   --sh-class: #7aa2f7;
   --sh-sign: #89ddff;
   --sh-string: #9ece6a;

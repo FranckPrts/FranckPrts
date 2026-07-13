@@ -1,65 +1,69 @@
 'use client'
 
-import React from 'react'
+import React, { useRef } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { ArrowLeftIcon } from 'lucide-react'
 import { Header } from './header'
 import { Footer } from './footer'
 import { PanelStack } from '@/components/panel/RightPanel'
+import { SplitHandle } from '@/components/panel/SplitHandle'
 import { usePanel } from '@/components/panel/PanelContext'
+import { cn } from '@/lib/utils'
 
 const SPRING = { type: 'spring', bounce: 0, duration: 0.4 } as const
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const { items, close } = usePanel()
+  const { items, close, indexWidth } = usePanel()
   const panelOpen = items.length > 0
+  const layoutRef = useRef<HTMLDivElement>(null)
 
   return (
     <>
       {/* ── Main layout row ── */}
-      <div className="flex w-full">
-        {/* Left column: narrows and left-aligns when panel opens */}
-        <motion.div
-          layout
-          transition={SPRING}
-          className="flex min-h-screen flex-shrink-0 flex-col px-4 pt-20 pb-8"
-          style={{
-            width: panelOpen ? 'min(50vw, 640px)' : '100%',
-            maxWidth: panelOpen ? 'min(50vw, 640px)' : '640px',
-            marginLeft: panelOpen ? '16px' : 'auto',
-            marginRight: panelOpen ? '16px' : 'auto',
-          }}
-        >
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </motion.div>
-
-        {/* Desktop separator + right panel */}
-        <AnimatePresence>
-          {panelOpen && (
-            <motion.div
-              key="desktop-panel"
-              initial={{ opacity: 0, flexBasis: 0, minWidth: 0 }}
-              animate={{ opacity: 1, flexBasis: 'auto', minWidth: 0 }}
-              exit={{ opacity: 0, flexBasis: 0, minWidth: 0 }}
-              transition={SPRING}
-              className="sticky top-0 hidden h-screen min-w-0 flex-1 lg:flex"
-            >
-              {/* Separator line */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="w-3px flex-shrink-0 self-stretch bg-zinc-100 dark:bg-zinc-800 tonal:bg-[var(--tonal-border)]"
-              />
-              {/* Panel stack */}
-              <div className="h-full min-w-0 flex-1 overflow-hidden">
-                <PanelStack />
-              </div>
-            </motion.div>
+      <div className="flex w-full justify-center">
+        <div
+          ref={layoutRef}
+          className={cn(
+            'app-layout flex min-w-0 w-full pl-12',
+            panelOpen && 'app-layout--with-panel',
           )}
-        </AnimatePresence>
+        >
+          {/* Left column */}
+          <motion.div
+            layout
+            transition={SPRING}
+            className={cn(
+              'flex min-h-screen flex-shrink-0 flex-col pt-20 pb-8 lg:px-4',
+              panelOpen ? 'max-w-none' : 'w-full lg:max-w-[var(--width-index)]',
+            )}
+            style={panelOpen ? { width: indexWidth } : undefined}
+          >
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </motion.div>
+
+          {/* Desktop split handle + panel zone */}
+          <AnimatePresence>
+            {panelOpen && (
+              <>
+                <SplitHandle key="split-handle" layoutRef={layoutRef} />
+                <motion.div
+                  key="desktop-panel"
+                  initial={{ opacity: 0, flexBasis: 0, minWidth: 0 }}
+                  animate={{ opacity: 1, flexBasis: 'auto', minWidth: 0 }}
+                  exit={{ opacity: 0, flexBasis: 0, minWidth: 0 }}
+                  transition={SPRING}
+                  className="sticky top-0 hidden h-screen min-w-0 flex-1 lg:flex"
+                >
+                  <div className="panel-column panel-column--flush h-full min-w-0 flex-1 overflow-hidden">
+                    <PanelStack />
+                  </div>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
 
       {/* ── Mobile overlay (fixed, always mounted so exit animation works) ── */}
