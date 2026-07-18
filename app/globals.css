@@ -102,7 +102,7 @@ html.tonal {
 
   @media (min-width: 1024px) {
     .app-layout--with-panel {
-      max-width: 100%;
+      max-width: min(100%, var(--width-layout));
     }
   }
 }

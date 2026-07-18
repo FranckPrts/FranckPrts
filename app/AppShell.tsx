@@ -27,16 +27,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             'app-layout flex min-w-0 w-full pl-12',
             panelOpen && 'app-layout--with-panel',
           )}
+          style={
+            panelOpen
+              ? ({ '--index-width': `${indexWidth}px` } as React.CSSProperties)
+              : undefined
+          }
         >
-          {/* Left column */}
+          {/* Left column — fixed width only at lg+ via --index-width */}
           <motion.div
             layout
             transition={SPRING}
             className={cn(
-              'flex min-h-screen flex-shrink-0 flex-col pt-20 pb-8 lg:px-4',
-              panelOpen ? 'max-w-none' : 'w-full lg:max-w-[var(--width-index)]',
+              'app-index flex min-h-screen w-full flex-col pt-20 pb-8 lg:px-4',
+              panelOpen
+                ? 'lg:w-[var(--index-width,var(--width-index))] lg:max-w-none lg:flex-shrink-0'
+                : 'flex-shrink-0 lg:max-w-[var(--width-index)]',
             )}
-            style={panelOpen ? { width: indexWidth } : undefined}
           >
             <Header />
             <main className="flex-1">{children}</main>
