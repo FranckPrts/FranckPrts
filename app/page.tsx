@@ -256,12 +256,11 @@ export default function Personal() {
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
       >
-        {/* <div className="flex-1">
-          <p className="text-zinc-600 dark:text-zinc-400">
-            I'm a neuroscientist who is set on making real science accessible.
-            I build EEG-powered tools and platforms that put genuine research capability in the hands of educators, students, and scientists — at scale.
+        <div className="flex-1">
+          <p className="text-zinc-600 pb-2 dark:text-zinc-400 tonal:text-[var(--tonal-tonal-accent)]">
+          I build and operate systems to make real-world research in the real world, from platform infrastructure across Ed institutions to live EEG hardware networked and compute systems across performance spaces.
           </p>
-        </div> */}
+        </div>
         <TextEffect
           as="p"
           preset="fade-in-blur"
@@ -270,8 +269,7 @@ export default function Personal() {
           delay={0.2}
           speedReveal={1}
         >
-          I'm a neuroscientist who is set on making real science accessible.
-          I build EEG-powered tools and platforms that put genuine research capability in the hands of educators, students, and scientists — at scale.
+          I act as connective tissue between the siloed technical fields, disciplines to empower educators, artists, and researchers to realize their potential.
         </TextEffect>
       </motion.section>
 

@@ -1,4 +1,5 @@
 'use client'
+
 import { cn } from '@/lib/utils'
 import { AnimatePresence, motion, Transition, Variants } from 'motion/react'
 import { useMemo, useId } from 'react'
@@ -25,18 +26,14 @@ export function TextMorph({
   const characters = useMemo(() => {
     const charCounts: Record<string, number> = {}
 
-    return children.split('').map((char, index) => {
+    return children.split('').map((char) => {
       const lowerChar = char.toLowerCase()
       charCounts[lowerChar] = (charCounts[lowerChar] || 0) + 1
 
       return {
         id: `${uniqueId}-${lowerChar}${charCounts[lowerChar]}`,
-        label:
-          char === ' '
-            ? '\u00A0'
-            : index === 0
-              ? char.toUpperCase()
-              : lowerChar,
+        // Preserve source casing for display; ids stay case-insensitive for morph matching.
+        label: char === ' ' ? '\u00A0' : char,
       }
     })
   }, [children, uniqueId])
@@ -55,12 +52,15 @@ export function TextMorph({
   }
 
   return (
-    <Component className={cn(className)} aria-label={children} style={style}>
+    <Component
+      className={cn('inline-block whitespace-pre-wrap', className)}
+      aria-label={children}
+      style={style}
+    >
       <AnimatePresence mode="popLayout" initial={false}>
         {characters.map((character) => (
           <motion.span
             key={character.id}
-            layoutId={character.id}
             className="inline-block"
             aria-hidden="true"
             initial="initial"
