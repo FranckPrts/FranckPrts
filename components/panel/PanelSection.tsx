@@ -1,7 +1,9 @@
 'use client'
 
 import React, { Suspense, useEffect, useState } from 'react'
-import { NetworkIcon, XIcon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { MaximizeIcon, NetworkIcon, XIcon } from 'lucide-react'
+import { usePanel } from '@/components/panel/PanelContext'
 import { BLOG_REGISTRY } from '@/lib/blog-registry'
 import { TextMorph } from '@/components/ui/text-morph'
 import { MagneticSocialLink } from '@/components/ui/magnetic-social-link'
@@ -62,6 +64,8 @@ function ContentBody({ Content }: { Content: React.ComponentType }) {
 }
 
 export function PanelSection({ id, title, onClose }: PanelSectionProps) {
+  const router = useRouter()
+  const { items, close } = usePanel()
   const [Content, setContent] = useState<React.ComponentType | null>(null)
   const [linkEntries, setLinkEntries] = useState<[string, string][]>([])
   const [error, setError] = useState(false)
@@ -97,8 +101,13 @@ export function PanelSection({ id, title, onClose }: PanelSectionProps) {
 
   const hasLinks = linkEntries.length > 0
 
+  const handleExpand = () => {
+    items.forEach((item) => close(item.id))
+    router.push(`/blog/${id}`)
+  }
+
   return (
-    <div className="panel-section my-2 mr-2 ml-0 flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-3xl border border-zinc-100 dark:border-zinc-800 tonal:border-[var(--tonal-border)]">
+    <div className="panel-section my-2 flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-3xl border border-zinc-100 dark:border-zinc-800 tonal:border-[var(--tonal-border)]">
       {linkedOpen && hasLinks ? (
         <div className="w-full flex-shrink-0 border-b border-zinc-200/60 bg-zinc-100/50 px-4 py-2 backdrop-blur-sm dark:border-zinc-800/60 dark:bg-zinc-900/50 tonal:border-[var(--tonal-border)] tonal:bg-[var(--tonal-surface-sun)]/60">
           <div
@@ -125,6 +134,14 @@ export function PanelSection({ id, title, onClose }: PanelSectionProps) {
         </h2>
         <div className="flex flex-shrink-0 items-center gap-2">
           <CopyButton id={id} />
+          <button
+            type="button"
+            onClick={handleExpand}
+            aria-label={`Open ${title} full page`}
+            className="rounded-md p-1 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 tonal:hover:bg-[var(--tonal-surface-raised)] tonal:hover:text-[var(--tonal-fg)]"
+          >
+            <MaximizeIcon size={15} />
+          </button>
           {hasLinks ? (
             <button
               type="button"

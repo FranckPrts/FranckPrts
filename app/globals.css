@@ -78,11 +78,11 @@ html.tonal {
     margin-inline: calc((100% - 100cqi) / 2);
   }
 
-  /* Panel card (desktop): text measure + prose-content horizontal padding (px-4) */
+  /* Panel card (desktop): capped width, centered in the flex column */
   @media (min-width: 1024px) {
     .panel-section {
       max-width: var(--width-panel-content);
-      margin-inline: 0 auto;
+      margin-inline: auto;
     }
   }
 
@@ -111,7 +111,7 @@ html.tonal {
   --width-measure: 65ch;
   --width-index: 640px;
   --width-split-default: 640px;
-  --width-panel-content: calc(var(--width-measure) + 2rem);
+  --width-panel-content: 900px;
   /* panel card (m-2) + separator (3px) */
   --width-panel-column: calc(var(--width-panel-content) + 1rem + 3px);
   --width-layout: calc(var(--width-index) + var(--width-panel-column));
