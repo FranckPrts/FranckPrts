@@ -138,7 +138,7 @@ export function PanelSection({ id, title, onClose }: PanelSectionProps) {
             type="button"
             onClick={handleExpand}
             aria-label={`Open ${title} full page`}
-            className="rounded-md p-1 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 tonal:hover:bg-[var(--tonal-surface-raised)] tonal:hover:text-[var(--tonal-fg)]"
+            className="rounded-md p-1 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 tonal:text-[var(--tonal-fg-muted)] tonal:hover:bg-[var(--tonal-surface-raised)] tonal:hover:text-[var(--tonal-fg)]"
           >
             <MaximizeIcon size={15} />
           </button>
@@ -161,7 +161,7 @@ export function PanelSection({ id, title, onClose }: PanelSectionProps) {
             type="button"
             onClick={onClose}
             aria-label={`Close ${title}`}
-            className="rounded-md p-1 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 tonal:hover:bg-[var(--tonal-surface-raised)] tonal:hover:text-[var(--tonal-fg)]"
+            className="rounded-md p-1 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 tonal:text-[var(--tonal-fg-muted)] tonal:hover:bg-[var(--tonal-surface-raised)] tonal:hover:text-[var(--tonal-fg)]"
           >
             <XIcon size={15} />
           </button>

@@ -110,15 +110,18 @@ function ChipButton({ child }: { child: WorkExperienceChild }) {
 }
 
 function RowHeader({ job }: { job: WorkExperience }) {
+  const company = job.company.trim()
   return (
     <div className="relative flex w-full flex-row items-start justify-between gap-4">
       <div className="min-w-0">
         <h4 className="font-normal dark:text-zinc-100 tonal:text-[var(--tonal-fg)]">
           {job.title}
         </h4>
-        <p className="text-zinc-500 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]">
-          {job.company}
-        </p>
+        {company ? (
+          <p className="text-zinc-500 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]">
+            {company}
+          </p>
+        ) : null}
       </div>
       <p className="shrink-0 whitespace-nowrap text-zinc-600 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]">
         {job.start} - {job.end}

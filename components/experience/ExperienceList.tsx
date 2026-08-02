@@ -1,10 +1,14 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { WORK_EXPERIENCE } from '@/app/data'
+import { WORK_EXPERIENCE, type WorkExperience } from '@/app/data'
 import { ExperienceRow } from './ExperienceRow'
 
-export function ExperienceList() {
+type ExperienceListProps = {
+  items?: WorkExperience[]
+}
+
+export function ExperienceList({ items = WORK_EXPERIENCE }: ExperienceListProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const rowEls = useRef(new Map<string, HTMLDivElement>())
 
@@ -32,7 +36,7 @@ export function ExperienceList() {
 
   return (
     <div className="flex flex-col space-y-0">
-      {WORK_EXPERIENCE.map((job) => (
+      {items.map((job) => (
         <ExperienceRow
           key={job.id}
           job={job}
