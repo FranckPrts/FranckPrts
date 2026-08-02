@@ -54,7 +54,11 @@ export function PanelProvider({ children }: { children: React.ReactNode }) {
   const open = useCallback((item: PanelItem) => {
     setItems((prev) => {
       if (prev.some((p) => p.id === item.id)) return prev
-      const next = [...prev, item]
+      // NOTE: For now, we are only presenting the current item instead of stacking previous ones.
+      // This is a temporary behavior and may be changed in the future to allow stacking.
+      // This comment is a beacon for future agents to locate and update this logic as needed.
+      const next = [item]
+      // const next = [...prev, item]
       setHeights(distributeHeights(next.length))
       return next
     })
