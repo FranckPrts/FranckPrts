@@ -12,10 +12,9 @@ import {
   MorphingDialogContainer,
 } from '@/components/ui/morphing-dialog'
 import Link from 'next/link'
-import { AnimatedBackground } from '@/components/ui/animated-background'
+import { ExperienceList } from '@/components/experience/ExperienceList'
 import {
   PROJECTS,
-  WORK_EXPERIENCE,
   BLOG_POSTS,
   EMAIL,
   CONTACT_LINK,
@@ -23,6 +22,7 @@ import {
 } from './data'
 import { usePanel } from '@/components/panel/PanelContext'
 import { BLOG_REGISTRY } from '@/lib/blog-registry'
+import { blogSlugFromPath } from '@/lib/blog-path'
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -41,14 +41,6 @@ const VARIANTS_SECTION = {
 
 const TRANSITION_SECTION = {
   duration: 0.3,
-}
-
-/** Slug segment for `/blog/{slug}` paths; null if not an internal blog URL. */
-function blogSlugFromPath(link: string): string | null {
-  const trimmed = link.trim()
-  if (!trimmed.startsWith('/blog/')) return null
-  const slug = trimmed.slice('/blog/'.length).replace(/\/+$/, '')
-  return slug.length > 0 ? slug : null
 }
 
 type ProjectVideoProps = {
@@ -279,88 +271,7 @@ export default function Personal() {
         transition={TRANSITION_SECTION}
       >
         <h3 className="mb-5 text-lg font-medium">Experience</h3>
-        <div className="flex flex-col space-y-0">
-          <AnimatedBackground
-            enableHover
-            className="h-full w-full rounded-lg bg-zinc-100 dark:bg-zinc-900/80 tonal:bg-[var(--tonal-surface-sunken)]"
-            transition={{
-              type: 'spring',
-              bounce: 0,
-              duration: 0.2,
-            }}
-          >
-            {WORK_EXPERIENCE.map((job) => {
-              const rowClass = '-mx-3 w-full rounded-xl px-3 py-3'
-              const rowInner = (
-                <div className="relative flex w-full flex-row justify-between">
-                  <div>
-                    <h4 className="font-normal dark:text-zinc-100 tonal:text-[var(--tonal-fg)]">
-                      {job.title}
-                    </h4>
-                    <p className="text-zinc-500 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]">
-                      {job.company}
-                    </p>
-                  </div>
-                  <p className="text-zinc-600 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]">
-                    {job.start} - {job.end}
-                  </p>
-                </div>
-              )
-
-              const href = job.link.trim()
-              if (!href) {
-                return (
-                  <div key={job.id} data-id={job.id} className={rowClass}>
-                    {rowInner}
-                  </div>
-                )
-              }
-
-              const slug = blogSlugFromPath(href)
-              if (slug !== null) {
-                if (slug in BLOG_REGISTRY) {
-                  const entry = BLOG_REGISTRY[slug]
-                  return (
-                    <button
-                      key={job.id}
-                      type="button"
-                      data-id={job.id}
-                      className={`${rowClass} cursor-pointer text-left`}
-                      onClick={() =>
-                        openPanel({ id: slug, title: entry.title })
-                      }
-                    >
-                      {rowInner}
-                    </button>
-                  )
-                }
-                return (
-                  <Link
-                    key={job.id}
-                    href={href}
-                    data-id={job.id}
-                    className={`${rowClass} cursor-pointer`}
-                  >
-                    {rowInner}
-                  </Link>
-                )
-              }
-
-              return (
-                <a
-                  key={job.id}
-                  data-id={job.id}
-                  className={rowClass}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {rowInner}
-                </a>
-              )
-            })}
-          </AnimatedBackground>
-        </div>
+        <ExperienceList />
       </motion.section>
 
       <motion.section
