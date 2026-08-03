@@ -109,21 +109,60 @@ function ChipButton({ child }: { child: WorkExperienceChild }) {
   )
 }
 
+function OrgLogo({
+  logo,
+  alt,
+}: {
+  logo?: string
+  alt: string
+}) {
+  const src = logo?.trim()
+
+  return (
+    <div className="size-8 shrink-0">
+      {src ? (
+        <div className="flex size-full items-center justify-center overflow-hidden rounded-[8px] bg-zinc-100 p-1.5 dark:bg-zinc-800 tonal:bg-[var(--tonal-surface-raised)]">
+          <span
+            role="img"
+            aria-label={alt}
+            className="block size-full bg-zinc-700 dark:bg-zinc-200 tonal:bg-[var(--tonal-fg)]"
+            style={{
+              maskImage: `url(${src})`,
+              WebkitMaskImage: `url(${src})`,
+              maskSize: 'contain',
+              WebkitMaskSize: 'contain',
+              maskRepeat: 'no-repeat',
+              WebkitMaskRepeat: 'no-repeat',
+              maskPosition: 'center',
+              WebkitMaskPosition: 'center',
+            }}
+          />
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
 function RowHeader({ job }: { job: WorkExperience }) {
   const company = job.company.trim()
+  const logoAlt =
+    job.logoAlt?.trim() || company || job.title.trim() || 'Organization'
   return (
     <div className="relative flex w-full flex-row items-start justify-between gap-4">
-      <div className="min-w-0">
-        <h4 className="font-normal dark:text-zinc-100 tonal:text-[var(--tonal-fg)]">
-          {job.title}
-        </h4>
-        {company ? (
-          <p className="text-zinc-500 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]">
-            {company}
-          </p>
-        ) : null}
+      <div className="flex min-w-0 flex-row items-start gap-2.5">
+        <OrgLogo logo={job.logo} alt={logoAlt} />
+        <div className="min-w-0">
+          <h4 className="text-sm font-normal dark:text-zinc-100 tonal:text-[var(--tonal-fg)]">
+            {job.title}
+          </h4>
+          {company ? (
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]">
+              {company}
+            </p>
+          ) : null}
+        </div>
       </div>
-      <p className="shrink-0 whitespace-nowrap text-zinc-600 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]">
+      <p className="shrink-0 whitespace-nowrap text-sm text-zinc-600 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]">
         {job.start} - {job.end}
       </p>
     </div>
@@ -248,7 +287,7 @@ export function ExperienceRow({
       >
         {fillLayer}
         <div
-          className={`relative z-10 flex flex-col p-3${expanded ? ' gap-4' : ''}`}
+          className={`relative z-10 flex flex-col px-4 py-3.5${expanded ? ' gap-3' : ''}`}
         >
           <button
             type="button"
@@ -279,7 +318,7 @@ export function ExperienceRow({
       onPointerLeave={handlePointerLeave}
     >
       {fillLayer}
-      <div className="relative z-10 p-3">{inner}</div>
+      <div className="relative z-10 px-4 py-3.5">{inner}</div>
     </div>
   )
 
