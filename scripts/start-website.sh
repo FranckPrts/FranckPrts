@@ -25,4 +25,4 @@ if lsof -ti:3000 >/dev/null 2>&1; then
   notify "Start website" "Port 3000 is still busy — starting on 3001"
 fi
 
-exec npm run dev -- -p "$PORT"
+exec env NODE_OPTIONS='--inspect' npm run dev -- -p "$PORT"
