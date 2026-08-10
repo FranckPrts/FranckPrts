@@ -1,52 +1,25 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { WORK_EXPERIENCE, type WorkExperience } from '@/app/data'
-import { ExperienceRow } from './ExperienceRow'
+import { WORK_EXPERIENCE } from '@/app/data'
+import { ChipRail } from '@/components/expandable/ChipRail'
+import { ExpandableContentList } from '@/components/expandable/ExpandableContentList'
+import type { ExpandableContentItem } from '@/components/expandable/ExpandableContentRow'
 
-type ExperienceListProps = {
-  items?: WorkExperience[]
-}
+const items: ExpandableContentItem[] = WORK_EXPERIENCE.map((job) => {
+  const children = job.children ?? []
+  return {
+    id: job.id,
+    title: job.title,
+    company: job.company,
+    start: job.start,
+    end: job.end,
+    logo: job.logo,
+    logoAlt: job.logoAlt,
+    link: job.link,
+    content: children.length > 0 ? <ChipRail chips={children} /> : undefined,
+  }
+})
 
-export function ExperienceList({ items = WORK_EXPERIENCE }: ExperienceListProps) {
-  const [expandedId, setExpandedId] = useState<string | null>(null)
-  const rowEls = useRef(new Map<string, HTMLDivElement>())
-
-  const setRowRef = useCallback((id: string, el: HTMLDivElement | null) => {
-    if (el) rowEls.current.set(id, el)
-    else rowEls.current.delete(id)
-  }, [])
-
-  useEffect(() => {
-    if (!expandedId) return
-
-    const onPointerDown = (event: PointerEvent) => {
-      const node = rowEls.current.get(expandedId)
-      if (!node) {
-        setExpandedId(null)
-        return
-      }
-      if (event.target instanceof Node && node.contains(event.target)) return
-      setExpandedId(null)
-    }
-
-    document.addEventListener('pointerdown', onPointerDown)
-    return () => document.removeEventListener('pointerdown', onPointerDown)
-  }, [expandedId])
-
-  return (
-    <div className="flex flex-col space-y-0">
-      {items.map((job) => (
-        <ExperienceRow
-          key={job.id}
-          job={job}
-          expanded={expandedId === job.id}
-          onToggleExpand={() =>
-            setExpandedId((prev) => (prev === job.id ? null : job.id))
-          }
-          rowRef={(el) => setRowRef(job.id, el)}
-        />
-      ))}
-    </div>
-  )
+export function ExperienceList() {
+  return <ExpandableContentList items={items} />
 }

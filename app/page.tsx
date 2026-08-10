@@ -12,10 +12,10 @@ import {
   MorphingDialogContainer,
 } from '@/components/ui/morphing-dialog'
 import Link from 'next/link'
+import { EducationList } from '@/components/education/EducationList'
 import { ExperienceList } from '@/components/experience/ExperienceList'
 import {
   PROJECTS,
-  EDUCATION,
   BLOG_POSTS,
   EMAIL,
   CONTACT_LINK,
@@ -316,7 +316,7 @@ export default function Personal() {
         transition={TRANSITION_SECTION}
       >
         <h3 className="mb-5 text-lg font-medium">Education</h3>
-        <ExperienceList items={EDUCATION} />
+        <EducationList />
       </motion.section>
 
       <motion.section

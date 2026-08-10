@@ -2,8 +2,9 @@
 import { AnimatedBackground } from '@/components/ui/animated-background'
 import { TextLoop } from '@/components/ui/text-loop'
 import { motion } from 'motion/react'
-import { MonitorIcon, MoonIcon, SunIcon, Blend} from 'lucide-react'
+import { MonitorIcon, MoonIcon, SunIcon, Blend, HeartHandshake } from 'lucide-react'
 import { useTheme } from 'next-themes'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 const THEMES_OPTIONS = [
@@ -125,16 +126,30 @@ export function Footer() {
       layout
       className="mt-24 border-t border-zinc-100 px-0 py-4 dark:border-zinc-800 tonal:border-[var(--tonal-border)]"
     >
-      <div className="flex items-center justify-between">
-        <a href="https://github.com/franckPrts" target="_blank">
-        <span className="text-xs text-zinc-500 tonal:text-[var(--tonal-fg-muted)]">Built </span>
-          <TextLoop className="text-xs text-zinc-500 tonal:text-[var(--tonal-fg-muted)]">
-            <span>with Motion-Primitives.</span>
-            <span>to keep track of my projects.</span>
-            <span>to explain what I do to my parents.</span>
-            <span>to have fun.</span>
-          </TextLoop>
-        </a>
+      <div className="flex items-center justify-between gap-4">
+        <div className="min-w-0">
+          <a href="https://github.com/franckPrts" target="_blank">
+            <span className="text-xs text-zinc-500 tonal:text-[var(--tonal-fg-muted)]">Built </span>
+            <TextLoop className="text-xs text-zinc-500 tonal:text-[var(--tonal-fg-muted)]">
+              <span>with Motion-Primitives.</span>
+              <span>to keep track of my projects.</span>
+              <span>to explain what I do to my parents.</span>
+              <span>to have fun.</span>
+            </TextLoop>
+          </a>
+          <p className="mt-1 text-xs text-zinc-500 tonal:text-[var(--tonal-fg-muted)]">
+            <Link
+              href="/credit"
+              className="inline-flex items-center gap-1 underline decoration-zinc-300 underline-offset-2 transition-colors hover:text-zinc-700 dark:decoration-zinc-600 dark:hover:text-zinc-300 tonal:decoration-[var(--tonal-border)] tonal:hover:text-[var(--tonal-fg)]"
+            >
+              <HeartHandshake
+                className="h-3 w-3 shrink-0"
+                aria-hidden
+              />
+              Credits
+            </Link>
+          </p>
+        </div>
         <div className="flex flex-row items-end text-xs text-zinc-400 tonal:text-[var(--tonal-fg-muted)]">
           <ThemeSwitch />
         </div>
