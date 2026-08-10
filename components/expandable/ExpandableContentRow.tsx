@@ -7,6 +7,7 @@ import {
   ExpandableRowHeader,
   ExpandableRowShell,
   EXPANDABLE_TOP_CLASS,
+  EXPAND_CONTENT_MS,
   type ExpandableRowMeta,
 } from '@/components/expandable/ExpandableRowShell'
 import { usePanel } from '@/components/panel/PanelContext'
@@ -22,6 +23,8 @@ export type ExpandableContentItem = ExpandableRowMeta & {
 type ExpandableContentRowProps = {
   item: ExpandableContentItem
   expanded: boolean
+  /** Drives content mount / height animation (may lag expanded on switch). */
+  contentOpen?: boolean
   onToggleExpand: () => void
   rowRef?: (el: HTMLDivElement | null) => void
 }
@@ -29,6 +32,7 @@ type ExpandableContentRowProps = {
 export function ExpandableContentRow({
   item,
   expanded,
+  contentOpen = false,
   onToggleExpand,
   rowRef,
 }: ExpandableContentRowProps) {
@@ -36,6 +40,7 @@ export function ExpandableContentRow({
   const header = <ExpandableRowHeader item={item} />
   const topClassName = EXPANDABLE_TOP_CLASS
   const hasContent = item.content != null
+  const contentDuration = EXPAND_CONTENT_MS / 1000
 
   if (hasContent) {
     return (
@@ -57,13 +62,13 @@ export function ExpandableContentRow({
           {header}
         </button>
         <AnimatePresence initial={false}>
-          {expanded ? (
+          {contentOpen ? (
             <motion.div
               key="content"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2, ease: 'easeOut' }}
+              transition={{ duration: contentDuration, ease: 'easeOut' }}
               className="relative z-10 overflow-hidden"
             >
               <div

@@ -9,8 +9,12 @@ import {
   type ReactNode,
 } from 'react'
 
-const FILL_MS = 600
-const FILL_OUT_MS = 180
+/** Content enter/exit and list exit-then-enter wait. */
+export const EXPAND_CONTENT_MS = 250
+export const FILL_EXPAND_MS = 250
+export const FILL_COLLAPSE_MS = 250
+/** Hover-only fill reveal (slower than expand). */
+export const FILL_HOVER_MS = 600
 const FINE_POINTER_QUERY = '(hover: hover) and (pointer: fine)'
 
 export type ExpandableRowMeta = {
@@ -182,7 +186,11 @@ export function ExpandableRowShell({
   }, [expanded, refreshCoverRadius])
 
   const showFill = expanded || (finePointer && hovered)
-  const fillDurationMs = showFill ? FILL_MS : FILL_OUT_MS
+  const fillDurationMs = expanded
+    ? FILL_EXPAND_MS
+    : finePointer && hovered
+      ? FILL_HOVER_MS
+      : FILL_COLLAPSE_MS
 
   return (
     <div

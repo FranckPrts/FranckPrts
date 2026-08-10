@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from 'next-themes'
+import { ExpandableAccordionProvider } from '@/components/expandable/ExpandableAccordionContext'
 import { PanelProvider } from '@/components/panel/PanelContext'
 import { AppShell } from './AppShell'
 
@@ -56,7 +57,9 @@ export default function RootLayout({
         >
           <div className="font-[family-name:var(--font-inter)]">
             <PanelProvider>
-              <AppShell>{children}</AppShell>
+              <ExpandableAccordionProvider>
+                <AppShell>{children}</AppShell>
+              </ExpandableAccordionProvider>
             </PanelProvider>
           </div>
         </ThemeProvider>
