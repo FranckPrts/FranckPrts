@@ -10,8 +10,7 @@ import {
   type ExpandableRowMeta,
 } from '@/components/expandable/ExpandableRowShell'
 import { usePanel } from '@/components/panel/PanelContext'
-import { BLOG_REGISTRY } from '@/lib/blog-registry'
-import { blogSlugFromPath } from '@/lib/blog-path'
+import { resolveContentLink } from '@/lib/content-link'
 
 export type ExpandableContentItem = ExpandableRowMeta & {
   /** Present → expandable row; chips or prose live here. */
@@ -80,8 +79,7 @@ export function ExpandableContentRow({
     )
   }
 
-  const href = (item.link ?? '').trim()
-  const slug = blogSlugFromPath(href)
+  const resolved = resolveContentLink(item.link ?? '')
 
   const leafShell = (inner: ReactNode) => (
     <ExpandableRowShell id={item.id} expanded={expanded} rowRef={rowRef}>
@@ -89,39 +87,40 @@ export function ExpandableContentRow({
     </ExpandableRowShell>
   )
 
-  if (!href) {
-    return leafShell(<div className={topClassName}>{header}</div>)
+  switch (resolved.kind) {
+    case 'static':
+      return leafShell(<div className={topClassName}>{header}</div>)
+    case 'panel':
+      return leafShell(
+        <button
+          type="button"
+          className={`${topClassName} cursor-pointer`}
+          onClick={() =>
+            openPanel({ id: resolved.slug, title: resolved.title })
+          }
+        >
+          {header}
+        </button>,
+      )
+    case 'internal':
+      return leafShell(
+        <Link
+          href={resolved.href}
+          className={`${topClassName} block cursor-pointer`}
+        >
+          {header}
+        </Link>,
+      )
+    case 'external':
+      return leafShell(
+        <a
+          href={resolved.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`${topClassName} block`}
+        >
+          {header}
+        </a>,
+      )
   }
-
-  if (slug !== null && slug in BLOG_REGISTRY) {
-    const entry = BLOG_REGISTRY[slug]
-    return leafShell(
-      <button
-        type="button"
-        className={`${topClassName} cursor-pointer`}
-        onClick={() => openPanel({ id: slug, title: entry.title })}
-      >
-        {header}
-      </button>,
-    )
-  }
-
-  if (slug !== null) {
-    return leafShell(
-      <Link href={href} className={`${topClassName} block cursor-pointer`}>
-        {header}
-      </Link>,
-    )
-  }
-
-  return leafShell(
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={`${topClassName} block`}
-    >
-      {header}
-    </a>,
-  )
 }
