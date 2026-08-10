@@ -21,6 +21,9 @@ export const metadata: Metadata = {
     template: '%s | Franck Prts'
   },
   description:  "A website about Franck",
+  icons: {
+    icon: [{ url: '/icons/favicon.svg', type: 'image/svg+xml' }],
+  },
 };
 
 const inter = Inter({
@@ -42,6 +45,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} bg-white tracking-tight antialiased dark:bg-zinc-950 tonal:bg-[var(--tonal-surface)] tonal:text-[var(--tonal-fg)]`}
+        suppressHydrationWarning
       >
         <ThemeProvider
           enableSystem={true}
