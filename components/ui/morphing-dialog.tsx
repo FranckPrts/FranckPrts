@@ -420,4 +420,5 @@ export {
   MorphingDialogSubtitle,
   MorphingDialogDescription,
   MorphingDialogImage,
+  useMorphingDialog,
 }

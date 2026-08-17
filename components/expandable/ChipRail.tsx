@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import type { ContentLink } from '@/app/data'
+import { BiteDialog } from '@/components/panel/BiteDialog'
 import { usePanel } from '@/components/panel/PanelContext'
 import { resolveContentLink } from '@/lib/content-link'
 
@@ -13,6 +14,17 @@ function ChipButton({ chip }: { chip: ContentLink }) {
 
   switch (resolved.kind) {
     case 'panel':
+      if (resolved.mode === 'bite') {
+        return (
+          <BiteDialog
+            id={resolved.slug}
+            title={resolved.title}
+            className={className}
+          >
+            {chip.label}
+          </BiteDialog>
+        )
+      }
       return (
         <button
           type="button"

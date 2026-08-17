@@ -15,15 +15,17 @@ import Link from 'next/link'
 import { EducationList } from '@/components/education/EducationList'
 import { ExperienceList } from '@/components/experience/ExperienceList'
 import {
-  PROJECTS,
+  SELECTED_PROJECTS,
   BLOG_POSTS,
   EMAIL,
   CONTACT_LINK,
   SOCIAL_LINKS,
 } from './data'
 import { usePanel } from '@/components/panel/PanelContext'
-import { BLOG_REGISTRY } from '@/lib/blog-registry'
+import { BiteDialog } from '@/components/panel/BiteDialog'
+import { BLOG_REGISTRY, resolvePanelMode } from '@/lib/blog-registry'
 import { blogSlugFromPath } from '@/lib/blog-path'
+import { resolvePanelSlug } from '@/lib/content-link'
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -235,6 +237,86 @@ function BlogCardInner({
   )
 }
 
+const PROJECT_NAME_CLASS =
+  'font-base group relative inline-block text-left font-[450] text-zinc-900 dark:text-zinc-50 tonal:text-[var(--tonal-fg)]'
+
+function ProjectNameUnderline() {
+  return (
+    <span className="absolute bottom-0.5 left-0 block h-[1px] w-full max-w-0 bg-zinc-900 dark:bg-zinc-50 tonal:bg-[var(--tonal-fg)] transition-all duration-200 group-hover:max-w-full" />
+  )
+}
+
+function ProjectCard({
+  project,
+}: {
+  project: (typeof SELECTED_PROJECTS)[number]
+}) {
+  const { open: openPanel, items } = usePanel()
+  const panelSlug =
+    resolvePanelSlug(project.panel ?? '') ?? resolvePanelSlug(project.link)
+  const panelTitle = panelSlug ? BLOG_REGISTRY[panelSlug]?.title : undefined
+  const panelMode = panelSlug
+    ? resolvePanelMode(BLOG_REGISTRY[panelSlug]?.mode)
+    : null
+  const isOpen =
+    panelSlug !== null &&
+    panelMode === 'window' &&
+    items.some((item) => item.id === panelSlug)
+  const href = project.link.trim()
+  const isExternal = /^https?:\/\//i.test(href)
+
+  return (
+    <div className="space-y-2">
+      <div className="relative rounded-2xl bg-zinc-50/40 p-1 ring-1 ring-zinc-200/50 ring-inset dark:bg-zinc-950/40 dark:ring-zinc-800/50 tonal:bg-[var(--tonal-surface-raised)]/60 tonal:ring-[var(--tonal-border)]/80">
+        <ProjectMedia
+          video={project.video}
+          image={project.image}
+          imageAlt={project.imageAlt}
+          title={project.name}
+        />
+      </div>
+      <div className="px-1">
+        {panelSlug && panelTitle && panelMode === 'bite' ? (
+          <BiteDialog
+            id={panelSlug}
+            title={panelTitle}
+            className={PROJECT_NAME_CLASS}
+          >
+            {project.name}
+            <ProjectNameUnderline />
+          </BiteDialog>
+        ) : panelSlug && panelTitle ? (
+          <button
+            type="button"
+            className={PROJECT_NAME_CLASS}
+            onClick={() => openPanel({ id: panelSlug, title: panelTitle })}
+          >
+            {project.name}
+            {isOpen ? (
+              <span className="ml-2 inline-block h-1.5 w-1.5 rounded-full bg-zinc-400 align-middle dark:bg-zinc-500" />
+            ) : null}
+            <ProjectNameUnderline />
+          </button>
+        ) : (
+          <a
+            className={PROJECT_NAME_CLASS}
+            href={href}
+            {...(isExternal
+              ? { target: '_blank', rel: 'noopener noreferrer' }
+              : {})}
+          >
+            {project.name}
+            <ProjectNameUnderline />
+          </a>
+        )}
+        <p className="text-base text-zinc-600 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]">
+          {project.description}
+        </p>
+      </div>
+    </div>
+  )
+}
+
 export default function Personal() {
   const { open: openPanel, items } = usePanel()
 
@@ -251,7 +333,7 @@ export default function Personal() {
       >
         <div className="flex-1">
           <p className="text-zinc-600 pb-2 dark:text-zinc-400 tonal:text-[var(--tonal-tonal-accent)]">
-          I build and operate systems to make real-world research in the real world, from platform infrastructure across Ed institutions to live EEG hardware networked and compute systems across performance spaces.
+          I build and operate systems in collaboration with collaboration with cognitive neuroscience researchers, educators, and artists, to enable making real-world research. My works supports stem education and provide tooling for researchers dedicated to improving it.
           </p>
         </div>
         <TextEffect
@@ -262,7 +344,7 @@ export default function Personal() {
           delay={0.2}
           speedReveal={1}
         >
-          I act as connective tissue between the siloed technical fields, disciplines to empower educators, artists, and researchers to realize their potential.
+          I'm particularly interested in social neuroscience, BCIs, and tech (no surprise there) with an ephasis on these fields intersection with urban design and development.
         </TextEffect>
       </motion.section>
 
@@ -273,32 +355,8 @@ export default function Personal() {
       >
         <h3 className="mb-5 text-lg font-medium">Selected Projects</h3>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          {PROJECTS.map((project) => (
-            <div key={project.name} className="space-y-2">
-              <div className="relative rounded-2xl bg-zinc-50/40 p-1 ring-1 ring-zinc-200/50 ring-inset dark:bg-zinc-950/40 dark:ring-zinc-800/50 tonal:bg-[var(--tonal-surface-raised)]/60 tonal:ring-[var(--tonal-border)]/80">
-                <ProjectMedia
-                  video={project.video}
-                  image={project.image}
-                  imageAlt={project.imageAlt}
-                  title={project.name}
-                />
-              </div>
-              <div className="px-1">
-                <a
-                  className="font-base group relative inline-block font-[450] text-zinc-900 dark:text-zinc-50 tonal:text-[var(--tonal-fg)]"
-                  href={project.link}
-                  {...(/^https?:\/\//i.test(project.link.trim())
-                    ? { target: '_blank', rel: 'noopener noreferrer' }
-                    : {})}
-                >
-                  {project.name}
-                  <span className="absolute bottom-0.5 left-0 block h-[1px] w-full max-w-0 bg-zinc-900 dark:bg-zinc-50 tonal:bg-[var(--tonal-fg)] transition-all duration-200 group-hover:max-w-full"></span>
-                </a>
-                <p className="text-base text-zinc-600 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]">
-                  {project.description}
-                </p>
-              </div>
-            </div>
+          {SELECTED_PROJECTS.map((project) => (
+            <ProjectCard key={project.name} project={project} />
           ))}
         </div>
       </motion.section>
@@ -328,11 +386,37 @@ export default function Personal() {
           {BLOG_POSTS.map((post) => {
             const slug = blogSlugFromPath(post.link)
             const hasPanel = slug !== null && slug in BLOG_REGISTRY
+            const panelMode = hasPanel
+              ? resolvePanelMode(BLOG_REGISTRY[slug].mode)
+              : null
             const isOpen =
               slug !== null &&
+              panelMode === 'window' &&
               items.some((item) => item.id === slug)
 
-            if (hasPanel) {
+            const cardClassName =
+              'relative block w-full cursor-pointer overflow-hidden rounded-2xl bg-zinc-300/30 p-[1px] text-left dark:bg-zinc-600/30 tonal:bg-stone-400/35'
+
+            if (hasPanel && slug !== null && panelMode === 'bite') {
+              return (
+                <BiteDialog
+                  key={post.uid}
+                  id={slug}
+                  title={post.title}
+                  className={cardClassName}
+                >
+                  <Spotlight
+                    className="from-zinc-900 via-zinc-800 to-zinc-700 blur-2xl dark:from-zinc-100 dark:via-zinc-200 dark:to-zinc-50 tonal:from-stone-700 tonal:via-stone-600 tonal:to-stone-500"
+                    size={64}
+                  />
+                  <div className="relative h-full w-full rounded-[15px] bg-white p-4 dark:bg-zinc-950 tonal:bg-[var(--tonal-surface)]">
+                    <BlogCardInner post={post} />
+                  </div>
+                </BiteDialog>
+              )
+            }
+
+            if (hasPanel && slug !== null) {
               return (
                 <button
                   key={post.uid}
@@ -341,7 +425,7 @@ export default function Personal() {
                   onClick={() =>
                     openPanel({ id: slug, title: post.title })
                   }
-                  className="relative block w-full cursor-pointer overflow-hidden rounded-2xl bg-zinc-300/30 p-[1px] text-left dark:bg-zinc-600/30 tonal:bg-stone-400/35"
+                  className={cardClassName}
                 >
                   <Spotlight
                     className="from-zinc-900 via-zinc-800 to-zinc-700 blur-2xl dark:from-zinc-100 dark:via-zinc-200 dark:to-zinc-50 tonal:from-stone-700 tonal:via-stone-600 tonal:to-stone-500"

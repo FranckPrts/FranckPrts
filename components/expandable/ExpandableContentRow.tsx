@@ -10,6 +10,7 @@ import {
   EXPAND_CONTENT_MS,
   type ExpandableRowMeta,
 } from '@/components/expandable/ExpandableRowShell'
+import { BiteDialog } from '@/components/panel/BiteDialog'
 import { usePanel } from '@/components/panel/PanelContext'
 import { resolveContentLink } from '@/lib/content-link'
 
@@ -96,6 +97,17 @@ export function ExpandableContentRow({
     case 'static':
       return leafShell(<div className={topClassName}>{header}</div>)
     case 'panel':
+      if (resolved.mode === 'bite') {
+        return leafShell(
+          <BiteDialog
+            id={resolved.slug}
+            title={resolved.title}
+            className={`${topClassName} cursor-pointer`}
+          >
+            {header}
+          </BiteDialog>,
+        )
+      }
       return leafShell(
         <button
           type="button"
