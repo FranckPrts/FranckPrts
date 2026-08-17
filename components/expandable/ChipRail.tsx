@@ -13,18 +13,17 @@ function ChipButton({ chip }: { chip: ContentLink }) {
     'pointer-events-auto rounded-lg bg-zinc-200 px-4 py-2 text-left text-base text-zinc-800 transition-colors hover:bg-zinc-300 dark:bg-zinc-950 dark:text-zinc-100 dark:hover:bg-zinc-900 tonal:bg-[var(--tonal-surface)] tonal:text-[var(--tonal-fg)] tonal:hover:bg-[var(--tonal-surface-raised)]'
 
   switch (resolved.kind) {
+    case 'bite':
+      return (
+        <BiteDialog
+          id={resolved.id}
+          title={resolved.title}
+          className={className}
+        >
+          {chip.label}
+        </BiteDialog>
+      )
     case 'panel':
-      if (resolved.mode === 'bite') {
-        return (
-          <BiteDialog
-            id={resolved.slug}
-            title={resolved.title}
-            className={className}
-          >
-            {chip.label}
-          </BiteDialog>
-        )
-      }
       return (
         <button
           type="button"

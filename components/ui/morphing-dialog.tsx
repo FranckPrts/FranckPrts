@@ -26,6 +26,8 @@ export type MorphingDialogContextType = {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
   uniqueId: string
   triggerRef: React.RefObject<HTMLDivElement>
+  /** Shared layoutId morph from trigger → content. Off for text triggers (e.g. bites). */
+  layout: boolean
 }
 
 const MorphingDialogContext =
@@ -44,11 +46,13 @@ function useMorphingDialog() {
 export type MorphingDialogProviderProps = {
   children: React.ReactNode
   transition?: Transition
+  layout?: boolean
 }
 
 function MorphingDialogProvider({
   children,
   transition,
+  layout = true,
 }: MorphingDialogProviderProps) {
   const [isOpen, setIsOpen] = useState(false)
   const uniqueId = useId()
@@ -60,8 +64,9 @@ function MorphingDialogProvider({
       setIsOpen,
       uniqueId,
       triggerRef,
+      layout,
     }),
-    [isOpen, uniqueId],
+    [isOpen, uniqueId, layout],
   )
 
   return (
@@ -74,11 +79,13 @@ function MorphingDialogProvider({
 export type MorphingDialogProps = {
   children: React.ReactNode
   transition?: Transition
+  /** Shared layout morph from trigger into content. Default true. */
+  layout?: boolean
 }
 
-function MorphingDialog({ children, transition }: MorphingDialogProps) {
+function MorphingDialog({ children, transition, layout = true }: MorphingDialogProps) {
   return (
-    <MorphingDialogProvider>
+    <MorphingDialogProvider layout={layout}>
       <MotionConfig transition={transition}>{children}</MotionConfig>
     </MorphingDialogProvider>
   )
@@ -95,9 +102,9 @@ function MorphingDialogTrigger({
   children,
   className,
   style,
-  triggerRef,
+  triggerRef: triggerRefProp,
 }: MorphingDialogTriggerProps) {
-  const { setIsOpen, isOpen, uniqueId } = useMorphingDialog()
+  const { setIsOpen, isOpen, uniqueId, layout, triggerRef } = useMorphingDialog()
 
   const handleClick = useCallback(() => {
     setIsOpen(!isOpen)
@@ -113,19 +120,33 @@ function MorphingDialogTrigger({
     [isOpen, setIsOpen],
   )
 
+  const shared = {
+    className: cn('relative cursor-pointer', className),
+    onClick: handleClick,
+    onKeyDown: handleKeyDown,
+    style,
+    role: 'button' as const,
+    tabIndex: 0,
+    'aria-haspopup': 'dialog' as const,
+    'aria-expanded': isOpen,
+    'aria-controls': `motion-ui-morphing-dialog-content-${uniqueId}`,
+    'aria-label': `Open dialog ${uniqueId}`,
+  }
+
+  // Plain element when not morphing — motion.div layout projection stretches text.
+  if (!layout) {
+    return (
+      <div ref={triggerRefProp ?? triggerRef} {...shared}>
+        {children}
+      </div>
+    )
+  }
+
   return (
     <motion.div
-      ref={triggerRef}
+      ref={triggerRefProp ?? triggerRef}
       layoutId={`dialog-${uniqueId}`}
-      className={cn('relative cursor-pointer', className)}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      style={style}
-      role="button"
-      aria-haspopup="dialog"
-      aria-expanded={isOpen}
-      aria-controls={`motion-ui-morphing-dialog-content-${uniqueId}`}
-      aria-label={`Open dialog ${uniqueId}`}
+      {...shared}
     >
       {children}
     </motion.div>
@@ -143,7 +164,7 @@ function MorphingDialogContent({
   className,
   style,
 }: MorphingDialogContentProps) {
-  const { setIsOpen, isOpen, uniqueId, triggerRef } = useMorphingDialog()
+  const { setIsOpen, isOpen, uniqueId, triggerRef, layout } = useMorphingDialog()
   const containerRef = useRef<HTMLDivElement>(null!)
   const [firstFocusableElement, setFirstFocusableElement] =
     useState<HTMLElement | null>(null)
@@ -207,13 +228,21 @@ function MorphingDialogContent({
   return (
     <motion.div
       ref={containerRef}
-      layoutId={`dialog-${uniqueId}`}
+      layoutId={layout ? `dialog-${uniqueId}` : undefined}
       className={cn('overflow-hidden', className)}
       style={style}
       role="dialog"
       aria-modal="true"
       aria-labelledby={`motion-ui-morphing-dialog-title-${uniqueId}`}
       aria-describedby={`motion-ui-morphing-dialog-description-${uniqueId}`}
+      {...(layout
+        ? {}
+        : {
+            layout: false,
+            initial: { opacity: 0, scale: 0.96 },
+            animate: { opacity: 1, scale: 1 },
+            exit: { opacity: 0, scale: 0.96 },
+          })}
     >
       {children}
     </motion.div>

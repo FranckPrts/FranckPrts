@@ -23,9 +23,9 @@ import {
 } from './data'
 import { usePanel } from '@/components/panel/PanelContext'
 import { BiteDialog } from '@/components/panel/BiteDialog'
-import { BLOG_REGISTRY, resolvePanelMode } from '@/lib/blog-registry'
+import { BLOG_REGISTRY } from '@/lib/blog-registry'
 import { blogSlugFromPath } from '@/lib/blog-path'
-import { resolvePanelSlug } from '@/lib/content-link'
+import { resolveContentLink } from '@/lib/content-link'
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -252,16 +252,12 @@ function ProjectCard({
   project: (typeof SELECTED_PROJECTS)[number]
 }) {
   const { open: openPanel, items } = usePanel()
-  const panelSlug =
-    resolvePanelSlug(project.panel ?? '') ?? resolvePanelSlug(project.link)
-  const panelTitle = panelSlug ? BLOG_REGISTRY[panelSlug]?.title : undefined
-  const panelMode = panelSlug
-    ? resolvePanelMode(BLOG_REGISTRY[panelSlug]?.mode)
-    : null
+  const resolved = resolveContentLink(
+    (project.panel ?? '').trim() || project.link,
+  )
   const isOpen =
-    panelSlug !== null &&
-    panelMode === 'window' &&
-    items.some((item) => item.id === panelSlug)
+    resolved.kind === 'panel' &&
+    items.some((item) => item.id === resolved.slug)
   const href = project.link.trim()
   const isExternal = /^https?:\/\//i.test(href)
 
@@ -276,20 +272,22 @@ function ProjectCard({
         />
       </div>
       <div className="px-1">
-        {panelSlug && panelTitle && panelMode === 'bite' ? (
+        {resolved.kind === 'bite' ? (
           <BiteDialog
-            id={panelSlug}
-            title={panelTitle}
+            id={resolved.id}
+            title={resolved.title}
             className={PROJECT_NAME_CLASS}
           >
             {project.name}
             <ProjectNameUnderline />
           </BiteDialog>
-        ) : panelSlug && panelTitle ? (
+        ) : resolved.kind === 'panel' ? (
           <button
             type="button"
             className={PROJECT_NAME_CLASS}
-            onClick={() => openPanel({ id: panelSlug, title: panelTitle })}
+            onClick={() =>
+              openPanel({ id: resolved.slug, title: resolved.title })
+            }
           >
             {project.name}
             {isOpen ? (
@@ -386,35 +384,13 @@ export default function Personal() {
           {BLOG_POSTS.map((post) => {
             const slug = blogSlugFromPath(post.link)
             const hasPanel = slug !== null && slug in BLOG_REGISTRY
-            const panelMode = hasPanel
-              ? resolvePanelMode(BLOG_REGISTRY[slug].mode)
-              : null
             const isOpen =
               slug !== null &&
-              panelMode === 'window' &&
+              hasPanel &&
               items.some((item) => item.id === slug)
 
             const cardClassName =
               'relative block w-full cursor-pointer overflow-hidden rounded-2xl bg-zinc-300/30 p-[1px] text-left dark:bg-zinc-600/30 tonal:bg-stone-400/35'
-
-            if (hasPanel && slug !== null && panelMode === 'bite') {
-              return (
-                <BiteDialog
-                  key={post.uid}
-                  id={slug}
-                  title={post.title}
-                  className={cardClassName}
-                >
-                  <Spotlight
-                    className="from-zinc-900 via-zinc-800 to-zinc-700 blur-2xl dark:from-zinc-100 dark:via-zinc-200 dark:to-zinc-50 tonal:from-stone-700 tonal:via-stone-600 tonal:to-stone-500"
-                    size={64}
-                  />
-                  <div className="relative h-full w-full rounded-[15px] bg-white p-4 dark:bg-zinc-950 tonal:bg-[var(--tonal-surface)]">
-                    <BlogCardInner post={post} />
-                  </div>
-                </BiteDialog>
-              )
-            }
 
             if (hasPanel && slug !== null) {
               return (

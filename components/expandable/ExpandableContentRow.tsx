@@ -96,18 +96,17 @@ export function ExpandableContentRow({
   switch (resolved.kind) {
     case 'static':
       return leafShell(<div className={topClassName}>{header}</div>)
+    case 'bite':
+      return leafShell(
+        <BiteDialog
+          id={resolved.id}
+          title={resolved.title}
+          className={`${topClassName} cursor-pointer`}
+        >
+          {header}
+        </BiteDialog>,
+      )
     case 'panel':
-      if (resolved.mode === 'bite') {
-        return leafShell(
-          <BiteDialog
-            id={resolved.slug}
-            title={resolved.title}
-            className={`${topClassName} cursor-pointer`}
-          >
-            {header}
-          </BiteDialog>,
-        )
-      }
       return leafShell(
         <button
           type="button"

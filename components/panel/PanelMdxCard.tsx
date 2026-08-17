@@ -3,7 +3,7 @@
 import React, { Suspense, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MaximizeIcon, NetworkIcon, XIcon } from 'lucide-react'
-import { BLOG_REGISTRY, type PanelMode } from '@/lib/blog-registry'
+import { BLOG_REGISTRY } from '@/lib/blog-registry'
 import { cn } from '@/lib/utils'
 import { TextMorph } from '@/components/ui/text-morph'
 import { MagneticSocialLink } from '@/components/ui/magnetic-social-link'
@@ -11,7 +11,7 @@ import { ProseContent } from '@/components/mdx/ProseContent'
 
 type MdxBlogModule = {
   default: React.ComponentType
-  metadata?: { linkedTo?: Record<string, unknown>; panelMode?: PanelMode }
+  metadata?: { linkedTo?: Record<string, unknown> }
 }
 
 const MAX_LINKED_TO = 12
@@ -63,8 +63,6 @@ export type PanelMdxCardProps = {
   onClose: () => void
   /** Called before navigating to the full blog page (e.g. close rail items). */
   onBeforeExpand?: () => void
-  /** Tighter header + default shell for morph pop-outs. */
-  compact?: boolean
   className?: string
 }
 
@@ -73,7 +71,6 @@ export function PanelMdxCard({
   title,
   onClose,
   onBeforeExpand,
-  compact = false,
   className,
 }: PanelMdxCardProps) {
   const router = useRouter()
@@ -145,10 +142,7 @@ export function PanelMdxCard({
       ) : null}
 
       <div
-        className={cn(
-          'flex flex-shrink-0 items-center justify-between gap-3 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900 tonal:border-[var(--tonal-border)] tonal:bg-[var(--tonal-surface)]',
-          compact ? 'px-4 py-2' : 'px-4 py-3',
-        )}
+        className="flex flex-shrink-0 items-center justify-between gap-3 bg-zinc-100 px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900 tonal:border-[var(--tonal-border)] tonal:bg-[var(--tonal-surface)]"
       >
         <h2 className="line-clamp-1 min-w-0 flex-1 text-m font-medium text-zinc-800 dark:text-zinc-200 tonal:text-[var(--tonal-fg-muted)]">
           {title}

@@ -10,7 +10,7 @@ import {
   MorphingDialogContainer,
   useMorphingDialog,
 } from '@/components/ui/morphing-dialog'
-import { PanelMdxCard } from '@/components/panel/PanelMdxCard'
+import { BiteCard } from '@/components/panel/BiteCard'
 import { cn } from '@/lib/utils'
 
 type BiteDialogProps = {
@@ -23,11 +23,12 @@ type BiteDialogProps = {
 
 /**
  * Bite MDX as a centered MorphingDialog card (same blur backdrop as project media zoom).
- * Registry / MDX `panelMode: 'bite'` should open this instead of the right rail.
+ * `BITE_REGISTRY` ids open this instead of the right rail.
  */
 export function BiteDialog({ id, title, children, className }: BiteDialogProps) {
   return (
     <MorphingDialog
+      layout={false}
       transition={{
         type: 'spring',
         bounce: 0,
@@ -62,13 +63,5 @@ export function BiteDialog({ id, title, children, className }: BiteDialogProps) 
 function BiteDialogCard({ id, title }: { id: string; title: string }) {
   const { setIsOpen } = useMorphingDialog()
 
-  return (
-    <PanelMdxCard
-      id={id}
-      title={title}
-      compact
-      className="h-full max-h-[min(70vh,32rem)] border-0"
-      onClose={() => setIsOpen(false)}
-    />
-  )
+  return <BiteCard id={id} title={title} onClose={() => setIsOpen(false)} />
 }

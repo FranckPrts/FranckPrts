@@ -6,6 +6,7 @@ const SHARED_PROSE =
   'prose prose-gray prose-measure prose-h1:text-xl prose-h1:font-medium prose-h2:text-lg prose-h2:font-medium prose-h3:text-base prose-h3:font-medium prose-h4:font-medium prose-strong:font-medium dark:prose-invert tonal:prose-invert'
 
 const CONTEXT_VARIANTS = {
+  bite: 'pb-2 prose-p:my-2 prose-headings:mt-0',
   panel: 'pb-10 prose-h2:mt-10',
   article:
     'mt-24 pb-20 prose-h4:prose-base prose-h2:mt-12 prose-h2:scroll-m-20 prose-h5:text-base prose-h5:font-medium prose-h6:text-base prose-h6:font-medium',

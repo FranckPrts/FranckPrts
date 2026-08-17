@@ -1,22 +1,31 @@
-import {
-  BLOG_REGISTRY,
-  resolvePanelMode,
-  type PanelMode,
-} from '@/lib/blog-registry'
+import { BITE_REGISTRY } from '@/lib/bite-registry'
+import { BLOG_REGISTRY } from '@/lib/blog-registry'
 import { blogSlugFromPath } from '@/lib/blog-path'
 
 export type ResolvedContentLink =
+  | {
+      kind: 'bite'
+      href: string
+      id: string
+      title: string
+    }
   | {
       kind: 'panel'
       href: string
       slug: string
       title: string
-      /** `bite` → MorphingDialog pop-out; `window` → right rail. */
-      mode: PanelMode
     }
   | { kind: 'internal'; href: string }
   | { kind: 'external'; href: string }
   | { kind: 'static' }
+
+/** Bite registry id if `linkOrId` is a registered bite key. */
+export function resolveBiteId(linkOrId: string): string | null {
+  const trimmed = linkOrId.trim()
+  if (!trimmed) return null
+  if (trimmed in BITE_REGISTRY) return trimmed
+  return null
+}
 
 /** Registry slug if `linkOrSlug` is a registered id or a `/blog/{slug}` path. */
 export function resolvePanelSlug(linkOrSlug: string): string | null {
@@ -28,10 +37,21 @@ export function resolvePanelSlug(linkOrSlug: string): string | null {
   return null
 }
 
-/** Classify a href into panel / internal blog Link / external / empty. */
+/** Classify a href into bite / panel / internal blog Link / external / empty. */
 export function resolveContentLink(link: string): ResolvedContentLink {
   const href = link.trim()
   if (!href) return { kind: 'static' }
+
+  // Bare ids: bite before blog so a shared id (e.g. Neurotheater) opens the peek.
+  const biteId = resolveBiteId(href)
+  if (biteId !== null) {
+    return {
+      kind: 'bite',
+      href,
+      id: biteId,
+      title: BITE_REGISTRY[biteId].title,
+    }
+  }
 
   const panelSlug = resolvePanelSlug(href)
   if (panelSlug !== null) {
@@ -40,7 +60,6 @@ export function resolveContentLink(link: string): ResolvedContentLink {
       href,
       slug: panelSlug,
       title: BLOG_REGISTRY[panelSlug].title,
-      mode: resolvePanelMode(BLOG_REGISTRY[panelSlug].mode),
     }
   }
   if (blogSlugFromPath(href) !== null) {
