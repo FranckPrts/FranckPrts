@@ -122,7 +122,7 @@ export function BiteCard({ id, title, onClose }: BiteCardProps) {
   return (
     <div className="flex min-h-0 w-full flex-col overflow-hidden rounded-3xl bg-white dark:bg-zinc-950 tonal:bg-[var(--tonal-surface)]">
       <div className="flex flex-shrink-0 items-center justify-between gap-3 bg-zinc-100 px-4 py-2 dark:bg-zinc-900 tonal:bg-[var(--tonal-surface)]">
-        <h2 className="line-clamp-1 min-w-0 flex-1 text-m font-medium text-zinc-800 dark:text-zinc-200 tonal:text-[var(--tonal-fg-muted)]">
+        <h2 className="line-clamp-1 min-w-0 flex-1 text-m font-medium text-zinc-800 dark:text-zinc-200 tonal:text-[var(--tonal-fg)]">
           {heading}
         </h2>
         {relatedPost ? (

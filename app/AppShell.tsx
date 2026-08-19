@@ -52,21 +52,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {/* Desktop split handle + panel zone */}
           <AnimatePresence>
             {panelOpen && (
-              <>
-                <SplitHandle key="split-handle" layoutRef={layoutRef} />
-                <motion.div
-                  key="desktop-panel"
-                  initial={{ opacity: 0, flexBasis: 0, minWidth: 0 }}
-                  animate={{ opacity: 1, flexBasis: 'auto', minWidth: 0 }}
-                  exit={{ opacity: 0, flexBasis: 0, minWidth: 0 }}
-                  transition={SPRING}
-                  className="sticky top-0 hidden h-screen min-w-0 flex-1 lg:flex"
-                >
-                  <div className="panel-column panel-column--flush h-full min-w-0 flex-1 overflow-hidden">
-                    <PanelStack />
-                  </div>
-                </motion.div>
-              </>
+              <SplitHandle key="split-handle" layoutRef={layoutRef} />
+            )}
+            {panelOpen && (
+              <motion.div
+                key="desktop-panel"
+                initial={{ opacity: 0, flexBasis: 0, minWidth: 0 }}
+                animate={{ opacity: 1, flexBasis: 'auto', minWidth: 0 }}
+                exit={{ opacity: 0, flexBasis: 0, minWidth: 0 }}
+                transition={SPRING}
+                className="sticky top-0 hidden h-screen min-w-0 flex-1 lg:flex"
+              >
+                <div className="panel-column panel-column--flush h-full min-w-0 flex-1 overflow-hidden">
+                  <PanelStack />
+                </div>
+              </motion.div>
             )}
           </AnimatePresence>
         </div>

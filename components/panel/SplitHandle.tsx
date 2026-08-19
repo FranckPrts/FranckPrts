@@ -1,7 +1,10 @@
 'use client'
 
+import { motion } from 'motion/react'
 import { cn } from '@/lib/utils'
 import { useSplitDrag } from './useSplitDrag'
+
+const SPRING = { type: 'spring', bounce: 0, duration: 0.4 } as const
 
 type SplitHandleProps = {
   layoutRef: React.RefObject<HTMLElement | null>
@@ -11,11 +14,15 @@ export function SplitHandle({ layoutRef }: SplitHandleProps) {
   const dragProps = useSplitDrag(layoutRef)
 
   return (
-    <div
+    <motion.div
       role="separator"
       aria-orientation="vertical"
       aria-label="Resize homepage and panel columns"
-      className="group sticky top-0 hidden h-screen w-5 flex-shrink-0 cursor-col-resize items-center justify-center self-start lg:flex"
+      initial={{ opacity: 0, width: 0 }}
+      animate={{ opacity: 1, width: 20 }}
+      exit={{ opacity: 0, width: 0 }}
+      transition={SPRING}
+      className="group sticky top-0 hidden h-screen shrink-0 cursor-col-resize items-center justify-center overflow-hidden self-start lg:flex"
       {...dragProps}
     >
       <div className="absolute inset-y-0 left-1/2 w-5 -translate-x-1/2" aria-hidden />
@@ -28,6 +35,6 @@ export function SplitHandle({ layoutRef }: SplitHandleProps) {
           'tonal:bg-[var(--tonal-border)] tonal:group-hover:bg-[var(--tonal-fg-muted)]',
         )}
       />
-    </div>
+    </motion.div>
   )
 }
