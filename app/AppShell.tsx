@@ -7,6 +7,8 @@ import { Header } from './header'
 import { Footer } from './footer'
 import { PanelStack } from '@/components/panel/RightPanel'
 import { SplitHandle } from '@/components/panel/SplitHandle'
+import { SplitPreviewOverlay } from '@/components/panel/SplitPreviewOverlay'
+import { useSplitDrag } from '@/components/panel/useSplitDrag'
 import { usePanel } from '@/components/panel/PanelContext'
 import { cn } from '@/lib/utils'
 
@@ -16,6 +18,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { items, close, indexWidth } = usePanel()
   const panelOpen = items.length > 0
   const layoutRef = useRef<HTMLDivElement>(null)
+  const leftPaneRef = useRef<HTMLDivElement>(null)
+  const handlePillRef = useRef<HTMLDivElement>(null)
+  const { isSplitPreviewing, previewPointerY, onMouseDown, onTouchStart } =
+    useSplitDrag(layoutRef, { leftPaneRef, handlePillRef })
 
   return (
     <>
@@ -24,8 +30,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div
           ref={layoutRef}
           className={cn(
-            'app-layout flex min-w-0 w-full pl-12',
+            'app-layout relative flex min-w-0 w-full pl-12',
             panelOpen && 'app-layout--with-panel',
+            isSplitPreviewing && 'select-none [&_.app-index]:pointer-events-none [&_.panel-column]:pointer-events-none',
           )}
           style={
             panelOpen
@@ -35,7 +42,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         >
           {/* Left column — fixed width only at lg+ via --index-width */}
           <motion.div
-            layout
+            layout={!isSplitPreviewing}
             transition={SPRING}
             className={cn(
               'app-index flex min-h-screen w-full flex-col pt-20 pb-8 lg:px-4',
@@ -52,11 +59,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {/* Desktop split handle + panel zone */}
           <AnimatePresence>
             {panelOpen && (
-              <SplitHandle key="split-handle" layoutRef={layoutRef} />
+              <SplitHandle
+                key="split-handle"
+                onMouseDown={onMouseDown}
+                onTouchStart={onTouchStart}
+                indexWidth={indexWidth}
+              />
             )}
             {panelOpen && (
               <motion.div
                 key="desktop-panel"
+                layout={!isSplitPreviewing}
                 initial={{ opacity: 0, flexBasis: 0, minWidth: 0 }}
                 animate={{ opacity: 1, flexBasis: 'auto', minWidth: 0 }}
                 exit={{ opacity: 0, flexBasis: 0, minWidth: 0 }}
@@ -69,6 +82,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </motion.div>
             )}
           </AnimatePresence>
+
+          {panelOpen && (
+            <SplitPreviewOverlay
+              visible={isSplitPreviewing}
+              layoutRef={layoutRef}
+              leftPaneRef={leftPaneRef}
+              handlePillRef={handlePillRef}
+              initialIndexWidth={indexWidth}
+              initialHandleY={previewPointerY}
+            />
+          )}
         </div>
       </div>
 

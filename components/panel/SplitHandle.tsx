@@ -2,28 +2,30 @@
 
 import { motion } from 'motion/react'
 import { cn } from '@/lib/utils'
-import { useSplitDrag } from './useSplitDrag'
+import { SPLIT_HANDLE_WIDTH } from './useSplitDrag'
 
 const SPRING = { type: 'spring', bounce: 0, duration: 0.4 } as const
 
 type SplitHandleProps = {
-  layoutRef: React.RefObject<HTMLElement | null>
+  onMouseDown: (e: React.MouseEvent) => void
+  onTouchStart: (e: React.TouchEvent) => void
+  indexWidth: number
 }
 
-export function SplitHandle({ layoutRef }: SplitHandleProps) {
-  const dragProps = useSplitDrag(layoutRef)
-
+export function SplitHandle({ onMouseDown, onTouchStart, indexWidth }: SplitHandleProps) {
   return (
     <motion.div
       role="separator"
       aria-orientation="vertical"
       aria-label="Resize homepage and panel columns"
+      aria-valuenow={indexWidth}
       initial={{ opacity: 0, width: 0 }}
-      animate={{ opacity: 1, width: 20 }}
+      animate={{ opacity: 1, width: SPLIT_HANDLE_WIDTH }}
       exit={{ opacity: 0, width: 0 }}
       transition={SPRING}
-      className="group sticky top-0 hidden h-screen shrink-0 cursor-col-resize items-center justify-center overflow-hidden self-start lg:flex"
-      {...dragProps}
+      onMouseDown={onMouseDown}
+      onTouchStart={onTouchStart}
+      className="group sticky top-0 z-10 hidden h-screen shrink-0 cursor-col-resize items-center justify-center overflow-hidden self-start lg:flex"
     >
       <div className="absolute inset-y-0 left-1/2 w-5 -translate-x-1/2" aria-hidden />
       <div
