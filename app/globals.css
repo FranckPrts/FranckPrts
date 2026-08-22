@@ -15,6 +15,12 @@ html.tonal {
   --tonal-progress: #4a6a3a;
 }
 
+/* Brand marks (monochrome SVG, CSS-masked like public/logos). */
+:root {
+  --icon-github: url('/icons/github.svg');
+  --icon-linkedin: url('/icons/linkedin.svg');
+}
+
 /*
   The default border color has changed to `currentColor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still

@@ -26,6 +26,7 @@ import { BiteDialog } from '@/components/panel/BiteDialog'
 import { BLOG_REGISTRY } from '@/lib/blog-registry'
 import { blogSlugFromPath } from '@/lib/blog-path'
 import { resolveContentLink } from '@/lib/content-link'
+import { DesignIcon } from '@/lib/design-system'
 
 const VARIANTS_CONTAINER = {
   hidden: { opacity: 0 },
@@ -331,7 +332,7 @@ export default function Personal() {
       >
         <div className="flex-1">
           <p className="text-zinc-600 pb-2 dark:text-zinc-400 tonal:text-[var(--tonal-tonal-accent)]">
-          I build and operate systems in collaboration with collaboration with cognitive neuroscience researchers, educators, and artists, to enable making real-world research. My works supports stem education and provide tooling for researchers dedicated to improving it.
+          I build and operate systems in collaboration with neuroscience researchers, educators, and artists, to enable making real-world research. My works supports STEM education and provide tooling for researchers dedicated to improving it.
           </p>
         </div>
         <TextEffect
@@ -344,6 +345,22 @@ export default function Personal() {
         >
           I'm particularly interested in social neuroscience, BCIs, and tech (no surprise there) with an ephasis on these fields intersection with urban design and development.
         </TextEffect>
+        <div className="mt-3 flex items-center gap-3">
+          {SOCIAL_LINKS.map((link) =>
+            link.icon ? (
+              <a
+                key={link.label}
+                href={link.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={link.label}
+                className="text-zinc-400 transition-colors hover:text-zinc-900 dark:text-zinc-500 dark:hover:text-zinc-100 tonal:text-[var(--tonal-fg-muted)] tonal:hover:text-[var(--tonal-fg)]"
+              >
+                <DesignIcon name={link.icon} className="size-4" />
+              </a>
+            ) : null,
+          )}
+        </div>
       </motion.section>
 
 
@@ -351,7 +368,7 @@ export default function Personal() {
         variants={VARIANTS_SECTION}
         transition={TRANSITION_SECTION}
       >
-        <h3 className="mb-5 text-lg font-medium">Selected Projects</h3>
+        <h3 className="mb-5 text-lg font-medium">Projects Highlights</h3>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           {SELECTED_PROJECTS.map((project) => (
             <ProjectCard key={project.name} project={project} />
