@@ -9,10 +9,10 @@ import { ExpandableContentList } from '@/components/expandable/ExpandableContent
 import type { ExpandableContentItem } from '@/components/expandable/ExpandableContentRow'
 
 const proseClassName =
-  'flex flex-col gap-2 text-sm text-zinc-600 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]'
+  'flex flex-col gap-2 text-base text-zinc-600 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]'
 
 const sectionTitleClassName =
-  'text-sm font-medium text-zinc-700 dark:text-zinc-300 tonal:text-[var(--tonal-fg)]'
+  'text-base font-medium text-zinc-700 dark:text-zinc-300 tonal:text-[var(--tonal-fg)]'
 
 function normalizeDetail(
   detail: EducationEntry['detail'],

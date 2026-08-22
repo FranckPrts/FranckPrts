@@ -6,7 +6,7 @@ import { ExpandableContentList } from '@/components/expandable/ExpandableContent
 import type { ExpandableContentItem } from '@/components/expandable/ExpandableContentRow'
 
 const proseClassName =
-  'flex flex-col gap-2 text-sm text-zinc-600 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]'
+  'flex flex-col gap-2 text-base text-zinc-600 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]'
 
 function detailItems(detail: string | string[] | undefined): string[] {
   if (detail == null) return []

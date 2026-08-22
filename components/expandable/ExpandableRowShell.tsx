@@ -93,21 +93,25 @@ export function ExpandableRowHeader({ item }: { item: ExpandableRowMeta }) {
   const logoAlt =
     item.logoAlt?.trim() || company || item.title.trim() || 'Organization'
   return (
-    <div className="relative flex w-full flex-row items-start justify-between gap-4">
-      <div className="flex min-w-0 flex-row items-start gap-2.5">
+    <div
+      className={`relative flex w-full flex-row justify-between gap-4 ${
+        company ? 'items-start' : 'items-center'
+      }`}
+    >
+      <div className="flex min-w-0 flex-row items-center gap-2.5">
         <OrgLogo logo={item.logo} alt={logoAlt} />
         <div className="min-w-0">
-          <h4 className="text-sm font-normal dark:text-zinc-100 tonal:text-[var(--tonal-fg)]">
+          <h4 className="text-base font-medium leading-6 dark:text-zinc-100 tonal:text-[var(--tonal-fg)]">
             {item.title}
           </h4>
           {company ? (
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]">
+            <p className="text-sm leading-5 text-zinc-500 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]">
               {company}
             </p>
           ) : null}
         </div>
       </div>
-      <p className="shrink-0 whitespace-nowrap text-sm text-zinc-600 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]">
+      <p className="shrink-0 whitespace-nowrap text-sm leading-6 text-zinc-600 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]">
         {item.start} - {item.end}
       </p>
     </div>
