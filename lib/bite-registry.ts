@@ -27,22 +27,24 @@ export type BiteRegistryEntry = {
   }>
 }
 
-const MINDHIVE_POST = 'my-role-at-mindhive'
+
+
+
 
 const MINDHIVE_FORKS: BiteFork[] = [
   {
-    slug: MINDHIVE_POST,
+    slug: "mindhive-product-engineering",
     label: 'UX researcher and product developer',
     blurb:
       'I design and ship the platform educators and students use to run real studies.',
   },
   {
-    slug: MINDHIVE_POST,
+    slug: "mindhive-core-research",
     label: 'Core researcher',
     blurb: 'I help run studies, protocols, and analysis for the research team.',
   },
   {
-    slug: MINDHIVE_POST,
+    slug: "mindhive-lead-implementation",
     label: 'Lead program coordinator',
     blurb: 'I coordinate programs that put classroom science into the field.',
   },
@@ -51,7 +53,7 @@ const MINDHIVE_FORKS: BiteFork[] = [
 export const BITE_REGISTRY: Record<string, BiteRegistryEntry> = {
   mindhive: {
     title: 'MindHive',
-    relatedPost: MINDHIVE_POST,
+    relatedPost: "mindhive-product-engineering",
     forks: MINDHIVE_FORKS,
     component: () => import('@/content/bites/mindhive.mdx'),
   },

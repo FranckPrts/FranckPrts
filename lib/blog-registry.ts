@@ -6,9 +6,18 @@ export type BlogRegistryEntry = {
 }
 
 export const BLOG_REGISTRY: Record<string, BlogRegistryEntry> = {
-  'my-role-at-mindhive': {
+  'mindhive-product-engineering': {
     title: 'What I spend the most time on',
-    component: () => import('@/app/blog/my-role-at-mindhive/page.mdx'),
+    component: () => import('@/app/blog/mindhive-product-engineering/page.mdx'),
+  },
+  'mindhive-core-research': {
+    title: 'Core research at MindHive',
+    component: () => import('@/app/blog/mindhive-core-research/page.mdx'),
+  },
+  'mindhive-lead-implementation': {
+    title: 'Lead implementation at MindHive',
+    component: () =>
+      import('@/app/blog/mindhive-lead-implementation/page.mdx'),
   },
   'neuro-theater-eeg-worshop-jhu-mica-2026': {
     title: 'Neurotheater — EEG streams for a live performance',

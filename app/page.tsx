@@ -77,14 +77,38 @@ function ProjectVideoPlaceholder({ title }: { title?: string }) {
   )
 }
 
+type ProjectBiteTrigger = {
+  id: string
+  title: string
+}
+
 type ProjectStillImageProps = {
   src: string
   alt?: string
   title?: string
+  bite?: ProjectBiteTrigger
 }
 
-function ProjectStillImage({ src, alt, title }: ProjectStillImageProps) {
+function ProjectStillImage({ src, alt, title, bite }: ProjectStillImageProps) {
   const label = alt?.trim() || title?.trim() || 'Project preview'
+  const image = (
+    <img
+      src={src}
+      alt={label}
+      className={`aspect-video w-full rounded-xl object-cover ${
+        bite ? 'cursor-pointer' : 'cursor-zoom-in'
+      }`}
+    />
+  )
+
+  if (bite) {
+    return (
+      <BiteDialog id={bite.id} title={bite.title} className="block w-full">
+        {image}
+      </BiteDialog>
+    )
+  }
+
   return (
     <MorphingDialog
       transition={{
@@ -94,11 +118,7 @@ function ProjectStillImage({ src, alt, title }: ProjectStillImageProps) {
       }}
     >
       <MorphingDialogTrigger>
-        <img
-          src={src}
-          alt={label}
-          className="aspect-video w-full cursor-zoom-in rounded-xl object-cover"
-        />
+        {image}
       </MorphingDialogTrigger>
       <MorphingDialogContainer>
         <MorphingDialogContent className="relative max-h-[85vh] max-w-[min(100vw-2rem,56rem)] rounded-2xl bg-zinc-50 p-1 ring-1 ring-zinc-200/50 ring-inset dark:bg-zinc-950 dark:ring-zinc-800/50 tonal:bg-[var(--tonal-surface-raised)] tonal:ring-[var(--tonal-border)]">
@@ -131,25 +151,50 @@ type ProjectMediaProps = {
   image?: string
   imageAlt?: string
   title?: string
+  bite?: ProjectBiteTrigger
 }
 
-function ProjectMedia({ video, image, imageAlt, title }: ProjectMediaProps) {
+function ProjectMedia({ video, image, imageAlt, title, bite }: ProjectMediaProps) {
   const v = video?.trim()
   if (v) {
-    return <ProjectVideo src={v} title={title} />
+    return <ProjectVideo src={v} title={title} bite={bite} />
   }
   const img = image?.trim()
   if (img) {
     return (
-      <ProjectStillImage src={img} alt={imageAlt} title={title} />
+      <ProjectStillImage src={img} alt={imageAlt} title={title} bite={bite} />
     )
   }
   return <ProjectVideoPlaceholder title={title} />
 }
 
-function ProjectVideo({ src, title }: ProjectVideoProps) {
+function ProjectVideo({
+  src,
+  title,
+  bite,
+}: ProjectVideoProps & { bite?: ProjectBiteTrigger }) {
   if (!src?.trim()) {
     return <ProjectVideoPlaceholder title={title} />
+  }
+
+  const video = (
+    <video
+      src={src}
+      autoPlay
+      loop
+      muted
+      className={`aspect-video w-full rounded-xl ${
+        bite ? 'cursor-pointer' : 'cursor-zoom-in'
+      }`}
+    />
+  )
+
+  if (bite) {
+    return (
+      <BiteDialog id={bite.id} title={bite.title} className="block w-full">
+        {video}
+      </BiteDialog>
+    )
   }
 
   return (
@@ -161,13 +206,7 @@ function ProjectVideo({ src, title }: ProjectVideoProps) {
       }}
     >
       <MorphingDialogTrigger>
-        <video
-          src={src}
-          autoPlay
-          loop
-          muted
-          className="aspect-video w-full cursor-zoom-in rounded-xl"
-        />
+        {video}
       </MorphingDialogTrigger>
       <MorphingDialogContainer>
         <MorphingDialogContent className="relative aspect-video rounded-2xl bg-zinc-50 p-1 ring-1 ring-zinc-200/50 ring-inset dark:bg-zinc-950 dark:ring-zinc-800/50 tonal:bg-[var(--tonal-surface-raised)] tonal:ring-[var(--tonal-border)]">
@@ -270,6 +309,11 @@ function ProjectCard({
           image={project.image}
           imageAlt={project.imageAlt}
           title={project.name}
+          bite={
+            resolved.kind === 'bite'
+              ? { id: resolved.id, title: resolved.title }
+              : undefined
+          }
         />
       </div>
       <div className="px-1">
