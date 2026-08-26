@@ -39,7 +39,7 @@ export function BiteDialog({ id, title, children, className }: BiteDialogProps) 
         {children}
       </MorphingDialogTrigger>
       <MorphingDialogContainer>
-        <MorphingDialogContent className="relative flex max-h-[min(70vh,32rem)] w-[min(100vw-2rem,32rem)] flex-col overflow-hidden rounded-3xl shadow-lg ring-1 ring-zinc-200/50 dark:ring-zinc-800/50 tonal:ring-[var(--tonal-border)]">
+        <MorphingDialogContent className="relative h-fit w-[min(100vw-2rem,32rem)] rounded-3xl shadow-lg ring-1 ring-zinc-200/50 dark:ring-zinc-800/50 tonal:ring-[var(--tonal-border)]">
           <BiteDialogCard id={id} title={title} />
         </MorphingDialogContent>
         <MorphingDialogClose

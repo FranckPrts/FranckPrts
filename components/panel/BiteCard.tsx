@@ -120,8 +120,8 @@ export function BiteCard({ id, title, onClose }: BiteCardProps) {
   }
 
   return (
-    <div className="flex min-h-0 w-full flex-col overflow-hidden rounded-3xl bg-white dark:bg-zinc-950 tonal:bg-[var(--tonal-surface)]">
-      <div className="flex flex-shrink-0 items-center justify-between gap-3 bg-zinc-100 px-4 py-2 dark:bg-zinc-900 tonal:bg-[var(--tonal-surface)]">
+    <div className="h-fit w-full overflow-hidden rounded-3xl bg-white dark:bg-zinc-950 tonal:bg-[var(--tonal-surface)]">
+      <div className="flex items-center justify-between gap-3 bg-zinc-100 px-4 py-2 dark:bg-zinc-900 tonal:bg-[var(--tonal-surface)]">
         <h2 className="line-clamp-1 min-w-0 flex-1 text-base font-medium text-zinc-800 dark:text-zinc-200 tonal:text-[var(--tonal-fg)]">
           {heading}
         </h2>
@@ -136,7 +136,7 @@ export function BiteCard({ id, title, onClose }: BiteCardProps) {
         ) : null}
       </div>
 
-      <div className="min-h-0 overflow-y-auto px-1 pt-3 pb-4">
+      <div className="px-1 pt-3 pb-4">
         {error ? (
           <p className="p-4 text-sm text-zinc-500 dark:text-zinc-400">
             Content could not be loaded.
