@@ -80,6 +80,9 @@ function ProjectVideoPlaceholder({ title }: { title?: string }) {
 type ProjectBiteTrigger = {
   id: string
   title: string
+  image?: string
+  imageAlt?: string
+  video?: string
 }
 
 type ProjectStillImageProps = {
@@ -103,7 +106,16 @@ function ProjectStillImage({ src, alt, title, bite }: ProjectStillImageProps) {
 
   if (bite) {
     return (
-      <BiteDialog id={bite.id} title={bite.title} className="block w-full">
+      <BiteDialog
+        id={bite.id}
+        title={bite.title}
+        className="block w-full"
+        media={{
+          image: bite.image ?? src,
+          imageAlt: bite.imageAlt ?? alt,
+          video: bite.video,
+        }}
+      >
         {image}
       </BiteDialog>
     )
@@ -191,7 +203,16 @@ function ProjectVideo({
 
   if (bite) {
     return (
-      <BiteDialog id={bite.id} title={bite.title} className="block w-full">
+      <BiteDialog
+        id={bite.id}
+        title={bite.title}
+        className="block w-full"
+        media={{
+          video: bite.video ?? src,
+          image: bite.image,
+          imageAlt: bite.imageAlt,
+        }}
+      >
         {video}
       </BiteDialog>
     )
@@ -300,6 +321,16 @@ function ProjectCard({
     items.some((item) => item.id === resolved.slug)
   const href = project.link.trim()
   const isExternal = /^https?:\/\//i.test(href)
+  const biteTrigger =
+    resolved.kind === 'bite'
+      ? {
+          id: resolved.id,
+          title: resolved.title,
+          image: project.image,
+          imageAlt: project.imageAlt,
+          video: project.video,
+        }
+      : undefined
 
   return (
     <div className="space-y-2">
@@ -309,19 +340,20 @@ function ProjectCard({
           image={project.image}
           imageAlt={project.imageAlt}
           title={project.name}
-          bite={
-            resolved.kind === 'bite'
-              ? { id: resolved.id, title: resolved.title }
-              : undefined
-          }
+          bite={biteTrigger}
         />
       </div>
       <div className="px-1">
-        {resolved.kind === 'bite' ? (
+        {resolved.kind === 'bite' && biteTrigger ? (
           <BiteDialog
-            id={resolved.id}
-            title={resolved.title}
+            id={biteTrigger.id}
+            title={biteTrigger.title}
             className={PROJECT_NAME_CLASS}
+            media={{
+              image: biteTrigger.image,
+              imageAlt: biteTrigger.imageAlt,
+              video: biteTrigger.video,
+            }}
           >
             {project.name}
             <ProjectNameUnderline />

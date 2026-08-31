@@ -50,13 +50,13 @@ const MINDHIVE_FORKS: BiteFork[] = [
 
 const NEUROTHEATER_FORKS: BiteFork[] = [
   {
-    slug: 'neuro-theater-eeg-performance-dc-2026',
+    slug: 'neurotheater-hyper-object-performance-dc-2026',
     label: 'Hyper_Object — JHU Bloomberg Center, DC',
     blurb:
       "I engineered the live EEG pipeline behind hyper_object, streaming performer and audience brain signals in real time to drive the show's generative visuals and sound — performed at the JHU Bloomberg Center.",
   },
   {
-    slug: 'neuro-theater-eeg-worshop-jhu-mica-2026',
+    slug: 'neurotheater-workshop-jhu-mica-2026',
     label: 'JHU-MICA Workshop — Baltimore',
     blurb:
       'I designed the hardware and software architecture for an EEG system linking performer and audience signals to every artistic department, during a week-long technical residency at the JHU/MICA Film Centre.',
@@ -70,11 +70,10 @@ export const BITE_REGISTRY: Record<string, BiteRegistryEntry> = {
     forks: MINDHIVE_FORKS,
     component: () => import('@/content/bites/mindhive.mdx'),
   },
-  'neuro-theater-eeg-worshop-jhu-mica-2026': {
+  neurotheater: {
     title: 'Neurotheater',
-    relatedPost: 'neuro-theater-eeg-performance-dc-2026',
+    relatedPost: 'neurotheater-hyper-object-performance-dc-2026',
     forks: NEUROTHEATER_FORKS,
-    component: () =>
-      import('@/content/bites/neuro-theater-eeg-worshop-jhu-mica-2026.mdx'),
+    component: () => import('@/content/bites/neurotheater.mdx'),
   },
 }

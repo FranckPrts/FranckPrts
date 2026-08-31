@@ -19,14 +19,14 @@ export const BLOG_REGISTRY: Record<string, BlogRegistryEntry> = {
     component: () =>
       import('@/app/blog/mindhive-lead-implementation/page.mdx'),
   },
-  'neuro-theater-eeg-worshop-jhu-mica-2026': {
+  'neurotheater-workshop-jhu-mica-2026': {
     title: 'Neurotheater — EEG streams for a live performance',
     component: () =>
-      import('@/app/blog/neuro-theater-eeg-worshop-jhu-mica-2026/page.mdx'),
+      import('@/app/blog/neurotheater-workshop-jhu-mica-2026/page.mdx'),
   },
-  'neuro-theater-eeg-performance-dc-2026': {
+  'neurotheater-hyper-object-performance-dc-2026': {
     title: "'hyper_object' a neuro-theater live performance",
     component: () =>
-      import('@/app/blog/neuro-theater-eeg-performance-dc-2026/page.mdx'),
+      import('@/app/blog/neurotheater-hyper-object-performance-dc-2026/page.mdx'),
   },
 }
