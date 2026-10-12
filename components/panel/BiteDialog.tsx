@@ -1,15 +1,14 @@
 'use client'
 
 import React from 'react'
-import { XIcon } from 'lucide-react'
 import {
   MorphingDialog,
   MorphingDialogTrigger,
   MorphingDialogContent,
-  MorphingDialogClose,
   MorphingDialogContainer,
   useMorphingDialog,
 } from '@/components/ui/morphing-dialog'
+import { DialogCloseButton } from '@/components/ui/dialog-close-button'
 import { BiteCard } from '@/components/panel/BiteCard'
 import {
   BiteOverlapStage,
@@ -70,19 +69,7 @@ export function BiteDialog({
         >
           <BiteDialogBody id={id} title={title} media={media} />
         </MorphingDialogContent>
-        <MorphingDialogClose
-          className="fixed top-6 right-6 h-fit w-fit rounded-full bg-white p-1 tonal:bg-[var(--tonal-surface-raised)]"
-          variants={{
-            initial: { opacity: 0 },
-            animate: {
-              opacity: 1,
-              transition: { delay: 0.3, duration: 0.1 },
-            },
-            exit: { opacity: 0, transition: { duration: 0 } },
-          }}
-        >
-          <XIcon className="h-5 w-5 text-zinc-500" />
-        </MorphingDialogClose>
+        <DialogCloseButton />
       </MorphingDialogContainer>
     </MorphingDialog>
   )

@@ -1,20 +1,11 @@
 'use client'
 
-import React, { Suspense, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  BITE_REGISTRY,
-  type BiteFork,
-  type BiteMetadata,
-} from '@/lib/bite-registry'
+import { BITE_REGISTRY, type BiteFork } from '@/lib/bite-registry'
 import { BLOG_REGISTRY } from '@/lib/blog-registry'
-import { ProseContent } from '@/components/mdx/ProseContent'
+import { MdxModuleContent } from '@/components/mdx/MdxModuleContent'
 import { usePanel } from '@/components/panel/PanelContext'
-
-type BiteMdxModule = {
-  default: React.ComponentType
-  metadata?: BiteMetadata
-}
+import { useMdxModule } from '@/hooks/useMdxModule'
 
 function normalizeForks(raw: unknown): BiteFork[] | null {
   if (!Array.isArray(raw)) return null
@@ -40,14 +31,6 @@ function normalizeForks(raw: unknown): BiteFork[] | null {
   return forks
 }
 
-function ContentBody({ Content }: { Content: React.ComponentType }) {
-  return (
-    <ProseContent context="bite">
-      <Content />
-    </ProseContent>
-  )
-}
-
 export type BiteCardProps = {
   id: string
   title: string
@@ -58,51 +41,14 @@ export function BiteCard({ id, title, onClose }: BiteCardProps) {
   const router = useRouter()
   const { open: openPanel } = usePanel()
   const entry = BITE_REGISTRY[id]
-  const [Content, setContent] = useState<React.ComponentType | null>(null)
-  const [forks, setForks] = useState<BiteFork[]>(() => entry?.forks ?? [])
-  const [relatedPost, setRelatedPost] = useState<string | undefined>(
-    () => entry?.relatedPost,
-  )
-  const [error, setError] = useState(!entry)
+  const mdx = useMdxModule(entry?.component)
+  const metadata = mdx.status === 'ready' ? mdx.metadata : undefined
 
-  useEffect(() => {
-    const next = BITE_REGISTRY[id]
-    if (!next) {
-      setError(true)
-      setContent(null)
-      setForks([])
-      setRelatedPost(undefined)
-      return
-    }
-
-    setForks(next.forks ?? [])
-    setRelatedPost(next.relatedPost)
-    setContent(null)
-    setError(false)
-
-    let cancelled = false
-    next
-      .component()
-      .then((mod) => {
-        if (cancelled) return
-        const m = mod as BiteMdxModule
-        setContent(() => m.default)
-        const metaForks = normalizeForks(m.metadata?.forks)
-        if (metaForks !== null) setForks(metaForks)
-        if (typeof m.metadata?.relatedPost === 'string') {
-          const related = m.metadata.relatedPost.trim()
-          if (related) setRelatedPost(related)
-        }
-        setError(false)
-      })
-      .catch(() => {
-        if (!cancelled) setError(true)
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [id])
+  // MDX metadata wins once loaded; the registry mirror covers the first paint.
+  const forks = normalizeForks(metadata?.forks) ?? entry?.forks ?? []
+  const metaRelatedPost =
+    typeof metadata?.relatedPost === 'string' ? metadata.relatedPost.trim() : ''
+  const relatedPost = metaRelatedPost || entry?.relatedPost
 
   const heading = entry?.title ?? title
 
@@ -137,29 +83,11 @@ export function BiteCard({ id, title, onClose }: BiteCardProps) {
       </div>
 
       <div className="px-1 pt-3 pb-4">
-        {error ? (
-          <p className="p-4 text-sm text-zinc-500 dark:text-zinc-400">
-            Content could not be loaded.
-          </p>
-        ) : !Content ? (
-          <div className="flex h-24 items-center justify-center">
-            <span className="text-sm text-zinc-400 dark:text-zinc-500">
-              Loading…
-            </span>
-          </div>
-        ) : (
-          <Suspense
-            fallback={
-              <div className="flex h-24 items-center justify-center">
-                <span className="text-sm text-zinc-400 dark:text-zinc-500">
-                  Loading…
-                </span>
-              </div>
-            }
-          >
-            <ContentBody Content={Content} />
-          </Suspense>
-        )}
+        <MdxModuleContent
+          state={mdx}
+          context="bite"
+          placeholderClassName="h-24"
+        />
 
         {forks.length > 0 ? (
           <div className="flex flex-col gap-2 px-4 pt-2">
