@@ -1,39 +1,45 @@
-import { BITE_REGISTRY } from '@/lib/bite-registry'
-import { BLOG_REGISTRY } from '@/lib/blog-registry'
 import { blogSlugFromPath } from '@/lib/blog-path'
+import {
+  getBite,
+  getPost,
+  isBiteId,
+  isPostSlug,
+  type BiteId,
+  type PostSlug,
+} from '@/lib/content'
 
 export type ResolvedContentLink =
   | {
       kind: 'bite'
       href: string
-      id: string
+      id: BiteId
       title: string
     }
   | {
       kind: 'panel'
       href: string
-      slug: string
+      slug: PostSlug
       title: string
     }
   | { kind: 'internal'; href: string }
   | { kind: 'external'; href: string }
   | { kind: 'static' }
 
-/** Bite registry id if `linkOrId` is a registered bite key. */
-export function resolveBiteId(linkOrId: string): string | null {
+/** Bite id if `linkOrId` is a key of `BITES`. */
+export function resolveBiteId(linkOrId: string): BiteId | null {
   const trimmed = linkOrId.trim()
   if (!trimmed) return null
-  if (trimmed in BITE_REGISTRY) return trimmed
+  if (isBiteId(trimmed)) return trimmed
   return null
 }
 
-/** Registry slug if `linkOrSlug` is a registered id or a `/blog/{slug}` path. */
-export function resolvePanelSlug(linkOrSlug: string): string | null {
+/** Post slug if `linkOrSlug` is a key of `POSTS` or a `/blog/{slug}` path. */
+export function resolvePanelSlug(linkOrSlug: string): PostSlug | null {
   const trimmed = linkOrSlug.trim()
   if (!trimmed) return null
-  if (trimmed in BLOG_REGISTRY) return trimmed
+  if (isPostSlug(trimmed)) return trimmed
   const slug = blogSlugFromPath(trimmed)
-  if (slug !== null && slug in BLOG_REGISTRY) return slug
+  if (slug !== null && isPostSlug(slug)) return slug
   return null
 }
 
@@ -49,7 +55,7 @@ export function resolveContentLink(link: string): ResolvedContentLink {
       kind: 'bite',
       href,
       id: biteId,
-      title: BITE_REGISTRY[biteId].title,
+      title: getBite(biteId)!.title,
     }
   }
 
@@ -59,7 +65,7 @@ export function resolveContentLink(link: string): ResolvedContentLink {
       kind: 'panel',
       href,
       slug: panelSlug,
-      title: BLOG_REGISTRY[panelSlug].title,
+      title: getPost(panelSlug)!.title,
     }
   }
   if (blogSlugFromPath(href) !== null) {

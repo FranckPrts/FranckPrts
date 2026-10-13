@@ -1,12 +1,9 @@
 'use client'
 
-import Link from 'next/link'
-import { BLOG_POSTS } from '@/app/data'
 import { Spotlight } from '@/components/ui/spotlight'
 import { usePanel } from '@/components/panel/PanelContext'
-import { resolveContentLink } from '@/lib/content-link'
-
-type BlogPost = (typeof BLOG_POSTS)[number]
+import { blogMediaUrl } from '@/lib/blog-media'
+import { LISTED_POSTS, type ListedPost } from '@/lib/content'
 
 const CARD_CLASS =
   'relative block w-full cursor-pointer overflow-hidden rounded-2xl bg-zinc-300/30 p-[1px] text-left dark:bg-zinc-600/30 tonal:bg-stone-400/35'
@@ -15,22 +12,22 @@ function BlogCardInner({
   post,
   isOpen,
 }: {
-  post: BlogPost
+  post: ListedPost
   isOpen?: boolean
 }) {
   return (
     <div
       className={
-        post.coverImage
+        post.cover
           ? 'flex flex-row items-start gap-4'
           : 'flex flex-col space-y-1'
       }
     >
-      {post.coverImage ? (
+      {post.cover ? (
         <div className="relative aspect-video w-28 shrink-0 overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-900 tonal:bg-[var(--tonal-surface-raised)]">
           <img
-            src={post.coverImage}
-            alt={post.coverAlt ?? ''}
+            src={blogMediaUrl(post.slug, post.cover.file)}
+            alt={post.cover.alt}
             className="h-full w-full object-cover"
           />
         </div>
@@ -43,7 +40,7 @@ function BlogCardInner({
           )}
         </h4>
         <p className="text-zinc-500 dark:text-zinc-400 tonal:text-[var(--tonal-fg-muted)]">
-          {post.description}
+          {post.cardDescription ?? post.description}
         </p>
       </div>
     </div>
@@ -51,7 +48,7 @@ function BlogCardInner({
 }
 
 /** Spotlight border + card body; must be a direct child of the card element. */
-function BlogCardFrame({ post, isOpen }: { post: BlogPost; isOpen?: boolean }) {
+function BlogCardFrame({ post, isOpen }: { post: ListedPost; isOpen?: boolean }) {
   return (
     <>
       <Spotlight
@@ -65,37 +62,28 @@ function BlogCardFrame({ post, isOpen }: { post: BlogPost; isOpen?: boolean }) {
   )
 }
 
-/** Registered posts open in the right rail; anything else navigates. */
-function BlogPostCard({ post }: { post: BlogPost }) {
+/** Opens the post in the right rail. */
+function BlogPostCard({ post }: { post: ListedPost }) {
   const { open: openPanel, items } = usePanel()
-  const resolved = resolveContentLink(post.link)
-
-  if (resolved.kind === 'panel') {
-    const isOpen = items.some((item) => item.id === resolved.slug)
-    return (
-      <button
-        type="button"
-        data-id={post.uid}
-        onClick={() => openPanel({ id: resolved.slug, title: post.title })}
-        className={CARD_CLASS}
-      >
-        <BlogCardFrame post={post} isOpen={isOpen} />
-      </button>
-    )
-  }
+  const isOpen = items.some((item) => item.id === post.slug)
 
   return (
-    <Link className={CARD_CLASS} href={post.link} data-id={post.uid}>
-      <BlogCardFrame post={post} />
-    </Link>
+    <button
+      type="button"
+      data-id={post.slug}
+      onClick={() => openPanel({ id: post.slug, title: post.title })}
+      className={CARD_CLASS}
+    >
+      <BlogCardFrame post={post} isOpen={isOpen} />
+    </button>
   )
 }
 
 export function BlogPostList() {
   return (
     <div className="flex flex-col space-y-2">
-      {BLOG_POSTS.map((post) => (
-        <BlogPostCard key={post.uid} post={post} />
+      {LISTED_POSTS.map((post) => (
+        <BlogPostCard key={post.slug} post={post} />
       ))}
     </div>
   )

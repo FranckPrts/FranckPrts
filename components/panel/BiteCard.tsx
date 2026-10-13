@@ -1,35 +1,10 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { BITE_REGISTRY, type BiteFork } from '@/lib/bite-registry'
-import { BLOG_REGISTRY } from '@/lib/blog-registry'
+import { getBite, getPost } from '@/lib/content'
 import { MdxModuleContent } from '@/components/mdx/MdxModuleContent'
 import { usePanel } from '@/components/panel/PanelContext'
 import { useMdxModule } from '@/hooks/useMdxModule'
-
-function normalizeForks(raw: unknown): BiteFork[] | null {
-  if (!Array.isArray(raw)) return null
-  const forks: BiteFork[] = []
-  for (const item of raw) {
-    if (!item || typeof item !== 'object' || Array.isArray(item)) continue
-    const rec = item as Record<string, unknown>
-    if (
-      typeof rec.slug === 'string' &&
-      rec.slug.trim() &&
-      typeof rec.label === 'string' &&
-      rec.label.trim() &&
-      typeof rec.blurb === 'string' &&
-      rec.blurb.trim()
-    ) {
-      forks.push({
-        slug: rec.slug.trim(),
-        label: rec.label.trim(),
-        blurb: rec.blurb.trim(),
-      })
-    }
-  }
-  return forks
-}
 
 export type BiteCardProps = {
   id: string
@@ -40,15 +15,10 @@ export type BiteCardProps = {
 export function BiteCard({ id, title, onClose }: BiteCardProps) {
   const router = useRouter()
   const { open: openPanel } = usePanel()
-  const entry = BITE_REGISTRY[id]
-  const mdx = useMdxModule(entry?.component)
-  const metadata = mdx.status === 'ready' ? mdx.metadata : undefined
-
-  // MDX metadata wins once loaded; the registry mirror covers the first paint.
-  const forks = normalizeForks(metadata?.forks) ?? entry?.forks ?? []
-  const metaRelatedPost =
-    typeof metadata?.relatedPost === 'string' ? metadata.relatedPost.trim() : ''
-  const relatedPost = metaRelatedPost || entry?.relatedPost
+  const entry = getBite(id)
+  const mdx = useMdxModule(entry?.load)
+  const forks = entry?.forks ?? []
+  const relatedPost = entry?.relatedPost
 
   const heading = entry?.title ?? title
 
@@ -59,7 +29,7 @@ export function BiteCard({ id, title, onClose }: BiteCardProps) {
   }
 
   const handleFork = (slug: string) => {
-    const post = BLOG_REGISTRY[slug]
+    const post = getPost(slug)
     if (!post) return
     onClose()
     openPanel({ id: slug, title: post.title })

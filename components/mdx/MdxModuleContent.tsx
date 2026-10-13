@@ -4,7 +4,7 @@ import type { MdxModuleState } from '@/hooks/useMdxModule'
 import { cn } from '@/lib/utils'
 
 type MdxModuleContentProps = {
-  state: MdxModuleState<unknown>
+  state: MdxModuleState
   context: React.ComponentProps<typeof ProseContent>['context']
   /** Height of the loading placeholder (e.g. `h-24`). */
   placeholderClassName: string

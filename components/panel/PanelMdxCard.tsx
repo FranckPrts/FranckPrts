@@ -1,25 +1,16 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MaximizeIcon, NetworkIcon, XIcon } from 'lucide-react'
-import { BLOG_REGISTRY } from '@/lib/blog-registry'
+import { getPost } from '@/lib/content'
 import { cn } from '@/lib/utils'
 import { CopyUrlButton } from '@/components/ui/copy-url-button'
 import { MagneticSocialLink } from '@/components/ui/magnetic-social-link'
 import { MdxModuleContent } from '@/components/mdx/MdxModuleContent'
 import { useMdxModule } from '@/hooks/useMdxModule'
 
-type BlogMdxMetadata = { linkedTo?: Record<string, unknown> }
-
 const MAX_LINKED_TO = 12
-
-function normalizeLinkedTo(raw: unknown): [string, string][] {
-  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return []
-  return Object.entries(raw as Record<string, unknown>)
-    .filter(([, v]) => typeof v === 'string' && v.trim().length > 0)
-    .map(([k, v]) => [k, v as string])
-}
 
 export type PanelMdxCardProps = {
   id: string
@@ -38,18 +29,17 @@ export function PanelMdxCard({
   className,
 }: PanelMdxCardProps) {
   const router = useRouter()
-  const mdx = useMdxModule<BlogMdxMetadata>(BLOG_REGISTRY[id]?.component)
+  const post = getPost(id)
+  const mdx = useMdxModule(post?.load)
   const [linkedOpen, setLinkedOpen] = useState(false)
 
   useEffect(() => {
     setLinkedOpen(false)
   }, [id])
 
-  const metadata = mdx.status === 'ready' ? mdx.metadata : undefined
-  const linkEntries = useMemo(
-    () => normalizeLinkedTo(metadata?.linkedTo).slice(0, MAX_LINKED_TO),
-    [metadata],
-  )
+  const linkEntries = Object.entries(post?.linkedTo ?? {})
+    .filter(([, url]) => url.trim())
+    .slice(0, MAX_LINKED_TO)
   const hasLinks = linkEntries.length > 0
 
   const handleExpand = () => {

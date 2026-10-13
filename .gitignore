@@ -42,5 +42,8 @@ next-env.d.ts
 # Private 
 .privateNotes/
 app/blog/*
+!app/blog/layout.tsx
 app/data.ts
+content/
 .cursor/
+.claude/launch.json
