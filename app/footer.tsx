@@ -73,53 +73,6 @@ function ThemeSwitch() {
   )
 }
 
-function TonalPaletteTest() {
-  const { theme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-  if (!mounted || theme !== 'tonal') return null
-  return (
-    <div
-      className="mt-3 flex flex-col gap-1"
-      role="presentation"
-      aria-hidden
-    >
-      <p className="text-[10px] uppercase tracking-wider text-zinc-500 tonal:text-[var(--tonal-fg-muted)]">
-        Tonal palette (test)
-      </p>
-      <div className="flex h-4 w-full max-w-xs gap-0.5 overflow-hidden rounded-md ring-1 ring-black/5 tonal:ring-[var(--tonal-border)]">
-        <span
-          className="h-full w-full rounded-l-sm"
-          style={{ background: 'var(--tonal-surface)' }}
-          title="surface"
-        />
-        <span
-          className="h-full w-full"
-          style={{ background: 'var(--tonal-surface-raised)' }}
-          title="raised"
-        />
-        <span
-          className="h-full w-full"
-          style={{ background: 'var(--tonal-surface-sunken)' }}
-          title="sunken"
-        />
-        <span
-          className="h-full w-full"
-          style={{ background: 'var(--tonal-fg-muted)' }}
-          title="fg-muted"
-        />
-        <span
-          className="h-full w-full rounded-r-sm"
-          style={{ background: 'var(--tonal-border)' }}
-          title="border"
-        />
-      </div>
-    </div>
-  )
-}
-
 export function Footer() {
   return (
     <motion.footer

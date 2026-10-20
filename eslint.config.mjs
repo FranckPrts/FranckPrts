@@ -9,13 +9,19 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
+// Formatting is Prettier's job (`.prettierrc.json`), not ESLint's.
 const eslintConfig = [
-  ...compat.extends(
-    "next/core-web-vitals",
-    "next/typescript",
-    "plugin:prettier/recommended",
-  ),
-  "plugin:mdx/recommended",
+  { ignores: [".next/**", "node_modules/**", "next-env.d.ts"] },
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  {
+    rules: {
+      // Allow `const { omit: _, ...rest } = obj` to drop a property.
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { ignoreRestSiblings: true },
+      ],
+    },
+  },
 ];
 
 export default eslintConfig;

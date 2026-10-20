@@ -6,7 +6,7 @@ import { BlogPostList } from '@/components/blog/BlogPostList'
 import { EducationList } from '@/components/education/EducationList'
 import { ExperienceList } from '@/components/experience/ExperienceList'
 import { ProjectList } from '@/components/projects/ProjectList'
-import { EMAIL, CONTACT_LINK, SOCIAL_LINKS } from './data'
+import { CONTACT_LINK, SOCIAL_LINKS } from './data'
 import { DesignIcon } from '@/lib/design-system'
 
 const VARIANTS_CONTAINER = {
@@ -53,7 +53,7 @@ export default function Personal() {
           delay={0.2}
           speedReveal={1}
         >
-          I'm particularly interested in social neuroscience, BCIs, and tech (no surprise there) with an ephasis on these fields intersection with urban design and development.
+          I&apos;m particularly interested in social neuroscience, BCIs, and tech (no surprise there) with an ephasis on these fields intersection with urban design and development.
         </TextEffect>
         <div className="mt-3 flex items-center gap-3">
           {SOCIAL_LINKS.map((link) =>

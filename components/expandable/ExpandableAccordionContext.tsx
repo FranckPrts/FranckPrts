@@ -72,7 +72,6 @@ export function ExpandableAccordionProvider({
   useEffect(() => {
     if (expandedId === contentIdRef.current) return
 
-    let timer: ReturnType<typeof setTimeout> | undefined
     const from = contentIdRef.current
     const to = expandedId
     const now = performance.now()
@@ -86,13 +85,13 @@ export function ExpandableAccordionProvider({
     if (to === null) return
 
     const wait = Math.max(0, exitUntilRef.current - now)
-    timer = setTimeout(() => {
+    const timer = setTimeout(() => {
       contentIdRef.current = to
       setContentId(to)
     }, wait)
 
     return () => {
-      if (timer) clearTimeout(timer)
+      clearTimeout(timer)
     }
   }, [expandedId])
 

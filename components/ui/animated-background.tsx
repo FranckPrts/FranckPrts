@@ -5,15 +5,21 @@ import {
   Children,
   cloneElement,
   ReactElement,
+  type HTMLAttributes,
   useEffect,
   useState,
   useId,
 } from 'react'
 
+type AnimatedBackgroundChildProps = HTMLAttributes<HTMLElement> & {
+  'data-id': string
+  'data-checked'?: string
+}
+
 export type AnimatedBackgroundProps = {
   children:
-    | ReactElement<{ 'data-id': string }>[]
-    | ReactElement<{ 'data-id': string }>
+    | ReactElement<AnimatedBackgroundChildProps>[]
+    | ReactElement<AnimatedBackgroundChildProps>
   defaultValue?: string
   onValueChange?: (newActiveId: string | null) => void
   className?: string
@@ -46,7 +52,7 @@ export function AnimatedBackground({
     }
   }, [defaultValue])
 
-  return Children.map(children, (child: any, index) => {
+  return Children.map(children, (child, index) => {
     const id = child.props['data-id']
 
     const interactionProps = enableHover
